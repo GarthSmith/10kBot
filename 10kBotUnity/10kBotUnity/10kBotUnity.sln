@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{AC65B1DB-F151-F72B-A0E8-3CF98B9D2FDF}") = "10kBotUnity", "Assembly-CSharp.csproj", "{3BAB4FDB-B6D2-BFD4-0610-36FAF09F3157}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BAB4FDB-B6D2-BFD4-0610-36FAF09F3157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BAB4FDB-B6D2-BFD4-0610-36FAF09F3157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BAB4FDB-B6D2-BFD4-0610-36FAF09F3157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BAB4FDB-B6D2-BFD4-0610-36FAF09F3157}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
