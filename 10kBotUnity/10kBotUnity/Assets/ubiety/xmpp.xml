@@ -1,0 +1,1515 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ubiety</name>
+    </assembly>
+    <members>
+        <member name="T:Ubiety.Common.Disco.IDiscoManager">
+            <summary>
+             Interface defining the methods that should be exposed by a feature discovery class.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Disco.IDiscoManager.LookupHash(System.String)">
+            <summary>
+            Lookup a verification hash in the cache.
+            </summary>
+            <param name="hash">The hash to lookup.</param>
+        </member>
+        <member name="T:Ubiety.Common.Disco.RegistryDiscoManager">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Disco.RegistryDiscoManager.LookupHash(System.String)">
+            <summary>
+            </summary>
+            <param name="hash"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="T:Ubiety.Common.ErrorType">
+            <summary>
+                Describes the type of error being sent
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.MissingId">
+            <summary>
+                Id is missing from the settings class
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.MissingPassword">
+            <summary>
+                Password is missing from the settings class
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.AuthorizationFailed">
+            <summary>
+                Failed to authorize the user based on provided credentials
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.WrongProtocolVersion">
+            <summary>
+                Server and client do no support the same protocol features
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.UnregisteredItem">
+            <summary>
+                Tag sent by the server is not available in client
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.CompressionFailed">
+            <summary>
+                Failed to implement compression of stream between client and server
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.XmlError">
+            <summary>
+                XML from the server is malformed or unexpected
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorType.ConnectionTimeout">
+            <summary>
+                Connection took too long to connect
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.ErrorSeverity">
+            <summary>
+                Describes the severity of an error so the appropriate action can be taken.
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorSeverity.Information">
+            <summary>
+                Error is mostly informative
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorSeverity.Disconnect">
+            <summary>
+                Error is bad enough to disconnect from the server
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorSeverity.Reconnect">
+            <summary>
+                Error caused an automatic reconnect attempt
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.ErrorSeverity.Fatal">
+            <summary>
+                Error caused cannot allow connection to continue
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Exceptions.ServerXmlException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Exceptions.ServerXmlException.#ctor(System.String,System.Exception)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:Ubiety.Common.ICompression">
+            <summary>
+                Interface describing the methods used by the socket to compress the information with the server
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.ICompression.Deflate(System.Byte[])">
+            <summary>
+                Called when the stream needs to compress the incoming data.
+            </summary>
+            <param name="data">The data to be compressed as a byte array.</param>
+            <returns>A byte array containing the compressed data.</returns>
+        </member>
+        <member name="M:Ubiety.Common.ICompression.Inflate(System.Byte[],System.Int32)">
+            <summary>
+                Called when the stream needs to decompress the outgoing data.
+            </summary>
+            <param name="data">The data as a byte array to be decompressed</param>
+            <param name="length">The length of the array</param>
+            <returns>A byte array containing the decompressed data</returns>
+        </member>
+        <member name="T:Ubiety.Common.Namespaces">
+            <summary>
+                Common XML namespaces used by XMPP
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Xmlns">
+            <summary>
+                Standard XMLNS namespace - http://www.w3.org/2000/xmlns
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Xml">
+            <summary>
+                Standard XML namespace - http://www.w3.org/XML/1998/namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Client">
+            <summary>
+                Default client namespace - jabber:client
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Stream">
+            <summary>
+                Stream Namespace - http://etherx.jabber.org/streams
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.XmppStreams">
+            <summary>
+                XMPP streams namespace - urn:ietf:params:xml:ns:xmpp-streams
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.StartTls">
+            <summary>
+                Start TLS namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Sasl">
+            <summary>
+                SASL namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Auth">
+            <summary>
+                Authentication namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Register">
+            <summary>
+                Account registration namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Bind">
+            <summary>
+                Resource binding namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Session">
+            <summary>
+                Session namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Compression">
+            <summary>
+                Compression namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.CompressionProtocol">
+            <summary>
+                Compression protocol namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Stanzas">
+            <summary>
+                Stanza namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Rostver">
+            <summary>
+                Roster version namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Entity">
+            <summary>
+                Namespace for Entity Capabilities XEP-0115
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.DiscoInfo">
+            <summary>
+                Service discovery namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Ping">
+            <summary>
+                Ping namespace
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Namespaces.Roster">
+            <summary>
+                Roster namespace
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Roster.DefaultRosterManager">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Roster.DefaultRosterManager.RequestRoster">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Roster.IRosterManager">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Roster.IRosterManager.RequestRoster">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Sasl.Md5Processor">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.Md5Processor.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.Md5Processor.Initialize(System.String,System.String)">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.Md5Processor.Step(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="tag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.Md5Processor.Dispose">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Sasl.PlainProcessor">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.PlainProcessor.Step(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="tag"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.PlainProcessor.Initialize(System.String,System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Sasl.SaslProcessor">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Sasl.SaslProcessor.Id">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Sasl.SaslProcessor.Password">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Common.Sasl.SaslProcessor.Item(System.String)">
+            <summary>
+            </summary>
+            <param name="directive"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.SaslProcessor.CreateProcessor(Ubiety.Core.MechanismType,Ubiety.Core.MechanismType)">
+            <summary>
+                Creates the appropriate authentication processor based on the types supported by the server and client.
+            </summary>
+            <param name="serverTypes">Authentication methods supported by the server</param>
+            <param name="clientTypes">Authentication methods supported by the client</param>
+            <returns>Authentication processor that is common between client and server.</returns>
+            <exception cref="T:System.NotSupportedException"></exception>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.SaslProcessor.Step(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.SaslProcessor.Initialize(System.String,System.String)">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.SaslProcessor.HexString(System.Collections.Generic.IEnumerable{System.Byte})">
+            <summary>
+            </summary>
+            <param name="buff"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.SaslProcessor.NextInt64">
+            <summary>
+                Generates a new random 64bit number
+            </summary>
+            <returns>Random Int64</returns>
+        </member>
+        <member name="T:Ubiety.Common.Sasl.ScramProcessor">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.ScramProcessor.Initialize(System.String,System.String)">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.Sasl.ScramProcessor.Step(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="tag"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Ubiety.Common.Stanza">
+            <summary>
+                Stanza describes a sequence of messages.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Stanza.#ctor(System.String,System.Xml.XmlQualifiedName)">
+            <summary>
+                Creates a new stanza 
+            </summary>
+            <param name="prefix">XML prefix of the stanza</param>
+            <param name="qname">XML qualified tag name of the stanza</param>
+        </member>
+        <member name="P:Ubiety.Common.Stanza.To">
+            <summary>
+                JID of the message receiver
+            </summary>
+        </member>
+        <member name="P:Ubiety.Common.Stanza.From">
+            <summary>
+                JID of the message sender
+            </summary>
+        </member>
+        <member name="P:Ubiety.Common.Stanza.Id">
+            <summary>
+                A unique id used to keep messages in the same stanza.
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Tag">
+            <summary>
+                Tag is the class from which all tags are subclassed.
+            </summary>
+        </member>
+        <member name="F:Ubiety.Common.Tag.Document">
+            <summary>
+                XML document all messages to and from the server will be a part of.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Tag.#ctor(System.String,System.Xml.XmlQualifiedName)">
+            <summary>
+                Initializes a new instance of a tag with the described prefix and qualified name.
+            </summary>
+            <param name="prefix">Tag Prefix</param>
+            <param name="qname">Qualified Namespace</param>
+        </member>
+        <member name="M:Ubiety.Common.Tag.#ctor">
+            <summary>
+                Initializes a new blank tag instance.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Tag.AddChildTag(Ubiety.Common.Tag)">
+            <summary>
+                Adds a tag as a child of the current tag.
+            </summary>
+            <param name="child">Tag to add as the child.</param>
+        </member>
+        <member name="M:Ubiety.Common.Tag.GetEnumAttribute``1(System.String)">
+            <summary>
+                Returns the value of the names attribute as the specified enumeration.
+            </summary>
+            <param name="name">Attribute to return.</param>
+            <typeparam name="T">Enumeration type to parse the attribute as.</typeparam>
+            <returns>Enumeration value of the named attribute.</returns>
+        </member>
+        <member name="M:Ubiety.Common.Tag.GetNextId">
+            <summary>
+                Calculates and returns a new unique id
+            </summary>
+            <returns>The next available unique id</returns>
+        </member>
+        <member name="M:Ubiety.Common.Tag.op_Implicit(Ubiety.Common.Tag)~System.String">
+            <summary>
+                Implicit cast of a tag to a string.
+            </summary>
+            <param name="one">Tag to cast to string</param>
+            <returns>String version of the tag</returns>
+        </member>
+        <member name="M:Ubiety.Common.Tag.ToString">
+            <summary>
+                Returns a string representation of the tag.
+            </summary>
+            <returns>String object representing the tag.</returns>
+        </member>
+        <member name="P:Ubiety.Common.Tag.Bytes">
+            <value>
+                Tag child contents as a byte array
+            </value>
+        </member>
+        <member name="T:Ubiety.Common.JID">
+            <summary>
+                Manages all aspects of a users identity on an XMPP network.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.JID.#ctor(System.String)">
+            <summary>
+                Creates a new JID from a string representation
+            </summary>
+            <param name="xid">String form of a JID like "user@server.com/home"</param>
+        </member>
+        <member name="M:Ubiety.Common.JID.#ctor(System.String,System.String,System.String)">
+            <summary>
+                Creates a new JID from its parts
+            </summary>
+            <param name="user">Username to be authenticated</param>
+            <param name="server">Server address to lookup and connect to</param>
+            <param name="resource">Resource to bind to - may be blank</param>
+        </member>
+        <member name="M:Ubiety.Common.JID.Equals(Ubiety.Common.JID)">
+            <summary>
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.GetHashCode">
+            <summary>
+                Unique hash for an object to be used as a key in dictionaries etc...
+            </summary>
+            <returns>Hash code based on Jid parts</returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.ToString">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.Equals(System.Object)">
+            <summary>
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Ubiety.Common.JID.XmppId">
+            <summary>
+                String representation of the id.
+            </summary>
+        </member>
+        <member name="P:Ubiety.Common.JID.User">
+            <summary>
+                Username of the user.
+            </summary>
+        </member>
+        <member name="P:Ubiety.Common.JID.Server">
+            <summary>
+                Server the user is logged into.
+            </summary>
+        </member>
+        <member name="P:Ubiety.Common.JID.Resource">
+            <summary>
+                Resource the user is communicating from.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.JID.op_Equality(Ubiety.Common.JID,Ubiety.Common.JID)">
+            <summary>
+            </summary>
+            <param name="one"></param>
+            <param name="two"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.op_Inequality(Ubiety.Common.JID,Ubiety.Common.JID)">
+            <summary>
+            </summary>
+            <param name="one"></param>
+            <param name="two"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.op_Implicit(System.String)~Ubiety.Common.JID">
+            <summary>
+            </summary>
+            <param name="one"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.op_Implicit(Ubiety.Common.JID)~System.String">
+            <summary>
+            </summary>
+            <param name="one"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.BuildJid">
+            <summary>
+                Builds a string version of an XID from the three parts.
+            </summary>
+            <returns>string version of xid</returns>
+        </member>
+        <member name="M:Ubiety.Common.JID.Parse(System.String)">
+            <summary>
+                Takes a string xid and breaks it into its parts.
+            </summary>
+        </member>
+        <member name="T:Ubiety.Common.Compression.Zlib">
+            <summary>
+                Implements the zlib compression algorithm for use in compressing the XMPP stream
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Compression.Zlib.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Common.Compression.Zlib.Deflate(System.Byte[])">
+            <summary>
+                Called when the stream needs to compress the outgoing data.
+            </summary>
+            <param name="data">The data to be compressed as a byte array.</param>
+            <returns>A byte array containiong the compressed data.</returns>
+        </member>
+        <member name="M:Ubiety.Common.Compression.Zlib.Inflate(System.Byte[],System.Int32)">
+            <summary>
+                Called when the stream needs to decompress the incoming data
+            </summary>
+            <param name="data">The data to be decompressed</param>
+            <param name="length">Length of the byte array</param>
+            <returns>Byte array of the decompressed data</returns>
+        </member>
+        <member name="T:Ubiety.Core.Bind">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Bind.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Bind.JidTag">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Compression">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Compression.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Compression.Algorithms">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Disco.C">
+            <summary>
+                &lt;c/&gt; element as described in XEP-0115
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Disco.C.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Disco.C.Node">
+            <summary>
+                A URI that uniquely identifies a software application, typically a URL at the website of the project or company
+                that produces the software.
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Disco.C.Ver">
+            <summary>
+                A string that is used to verify the identity and supported features of the entity.
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Error">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Error.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Features">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Features.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Features.StartSasl">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Features.StartTls">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Features.Compression">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.GenericTag">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.GenericTag.#ctor(System.Xml.XmlQualifiedName)">
+            <summary>
+            </summary>
+            <param name="qname"></param>
+        </member>
+        <member name="T:Ubiety.Core.Iq.IqType">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.Iq.IqType.Get">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.Iq.IqType.Set">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.Iq.IqType.Error">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.Iq.IqType.Result">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Iq.Iq">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Iq.Iq.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Iq.Iq.IqType">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Iq.Iq.Payload">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Iq.Query">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Jid">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Jid.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Jid.UserJid">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.MechanismType">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.MechanismType.None">
+            <summary>
+                No Authentication
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.MechanismType.Plain">
+            <summary>
+                Plain Text Authentication (Only use on encrypted connections)
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.MechanismType.DigestMd5">
+            <summary>
+                DIGEST-MD5 Authentication
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.MechanismType.External">
+            <summary>
+                External Certificate Authentication (Not Implmented Yet)
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.MechanismType.Scram">
+            <summary>
+                SCRAM-SHA-1 Authentication
+            </summary>
+        </member>
+        <member name="F:Ubiety.Core.MechanismType.Default">
+            <summary>
+                Default Authentication Types (SCRAM-SHA-1 and DIGEST-MD5)
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Mechanisms">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Mechanisms.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Mechanisms.SupportedTypes">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Mechanisms.GetMechanisms">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Ubiety.Core.Mechanism">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Mechanism.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Mechanism.Text">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Mechanism.Type">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Mechanism.GetType(System.String)">
+            <summary>
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Core.Mechanism.GetMechanism(Ubiety.Core.MechanismType)">
+            <summary>
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Ubiety.Core.Sasl.Auth">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Sasl.Auth.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Sasl.Auth.Mechanism">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Sasl.Auth.Text">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.StartTls">
+            <summary>
+            StartTLS is used to start an encrypted authentication session.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.StartTls.#ctor">
+            <summary>
+            Creates a new instance of the StartTLS tag.
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.StartTls.Required">
+            <summary>
+            Is StartTLS required by the server for authentication.
+            </summary>
+        </member>
+        <member name="T:Ubiety.Core.Stream">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Stream.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Stream.Version">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Stream.Namespace">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Stream.Features">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Stream.Error">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Ubiety.Core.Stream.Language">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Core.Stream.StartTag">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Ubiety.Infrastructure.Attributes.CompressionAttribute">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Attributes.CompressionAttribute.#ctor(System.String,System.Type)">
+            <summary>
+            </summary>
+            <param name="compression"></param>
+            <param name="type"></param>
+        </member>
+        <member name="P:Ubiety.Infrastructure.Attributes.CompressionAttribute.Algorithm">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Infrastructure.Attributes.CompressionAttribute.ClassType">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Infrastructure.Attributes.XmppTagAttribute">
+            <remarks>
+            Used to denote which classes in an assembly are proper XMPP tags.
+            </remarks>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Attributes.XmppTagAttribute.#ctor(System.String,System.String,System.Type)">
+            <summary>
+            Creates a new instance of <see cref="T:Ubiety.Infrastructure.Attributes.XmppTagAttribute"/>
+            </summary>
+            <param name="name"></param>
+            <param name="ns">The namespace the tag applies to</param>
+            <param name="type">The class-type the tag is for</param>
+        </member>
+        <member name="P:Ubiety.Infrastructure.Attributes.XmppTagAttribute.Name">
+            <summary>
+            The tag namespace prefix
+            </summary>
+        </member>
+        <member name="P:Ubiety.Infrastructure.Attributes.XmppTagAttribute.Namespace">
+            <summary>
+            The tags namespace
+            </summary>
+        </member>
+        <member name="P:Ubiety.Infrastructure.Attributes.XmppTagAttribute.ClassType">
+            <summary>
+            The <see cref="T:System.Type"/> used to create an instance
+            </summary>
+        </member>
+        <member name="T:Ubiety.Infrastructure.Extensions.AssemblyExtensions">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Extensions.AssemblyExtensions.GetAttributes``1(System.Reflection.Assembly)">
+            <summary>
+            </summary>
+            <param name="assembly"></param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:Ubiety.Infrastructure.Extensions.ByteExtensions">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Extensions.ByteExtensions.TrimNull(System.Collections.Generic.IList{System.Byte})">
+            <summary>
+                Trims null values from the end of a byte array.
+            </summary>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Extensions.ByteExtensions.Clear(System.Byte[])">
+            <summary>
+                Clears a byte array
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="T:Ubiety.Infrastructure.Extensions.EnumerableExtensions">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Extensions.EnumerableExtensions.Apply``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            </summary>
+            <param name="enumerable"></param>
+            <param name="function"></param>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Ubiety.Infrastructure.Extensions.TypeExtensions">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Extensions.TypeExtensions.GetCustomAttributes``1(System.Type)">
+            <summary>
+            </summary>
+            <param name="type"></param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Infrastructure.Extensions.TypeExtensions.GetCustomAttributes``1(System.Type,System.Boolean)">
+            <summary>
+            </summary>
+            <param name="type"></param>
+            <param name="inherit"></param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:Ubiety.Infrastructure.TagEventArgs">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.TagEventArgs.#ctor(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="tag"></param>
+        </member>
+        <member name="P:Ubiety.Infrastructure.TagEventArgs.Tag">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Infrastructure.ErrorEventArgs">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.ErrorEventArgs.#ctor(System.String,Ubiety.Common.ErrorType,Ubiety.Common.ErrorSeverity)">
+            <summary>
+            </summary>
+            <param name="message"></param>
+            <param name="type"></param>
+            <param name="severity"></param>
+        </member>
+        <member name="P:Ubiety.Infrastructure.ErrorEventArgs.Message">
+            <value>
+                The default error message.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.ErrorEventArgs.Type">
+            <value>
+                The type of error that is being returned.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.ErrorEventArgs.Severity">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Ubiety.Infrastructure.XmppEvents">
+            <summary>
+            </summary>
+        </member>
+        <member name="E:Ubiety.Infrastructure.XmppEvents.OnConnect">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.Connect(System.Object,System.EventArgs)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+        </member>
+        <member name="E:Ubiety.Infrastructure.XmppEvents.OnDisconnect">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.Disconnect(System.Object,System.EventArgs)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+        </member>
+        <member name="E:Ubiety.Infrastructure.XmppEvents.OnSend">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.Send(System.Object,Ubiety.Infrastructure.TagEventArgs)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.Send(System.Object,Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="tag"></param>
+        </member>
+        <member name="E:Ubiety.Infrastructure.XmppEvents.OnNewTag">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.NewTag(System.Object,Ubiety.Infrastructure.TagEventArgs)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.NewTag(System.Object,Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="tag"></param>
+        </member>
+        <member name="E:Ubiety.Infrastructure.XmppEvents.OnError">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.Error(System.Object,Ubiety.Infrastructure.ErrorEventArgs)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.Error(System.Object,Ubiety.Common.ErrorType,Ubiety.Common.ErrorSeverity,System.String)">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="type"></param>
+            <param name="severity"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Ubiety.Infrastructure.XmppEvents.Error(System.Object,Ubiety.Common.ErrorType,Ubiety.Common.ErrorSeverity,System.String,System.Object[])">
+            <summary>
+            </summary>
+            <param name="sender"></param>
+            <param name="type"></param>
+            <param name="severity"></param>
+            <param name="message"></param>
+            <param name="parameters"></param>
+        </member>
+        <member name="T:Ubiety.Infrastructure.ProtocolParser">
+            <remarks>
+                The core of the library.  All messages come through here to be translated into the appropriate <see cref="T:Ubiety.Common.Tag" />
+            </remarks>
+        </member>
+        <member name="M:Ubiety.Infrastructure.ProtocolParser.Parse(System.String)">
+            <summary>
+                Parses the message into its appropriate <seealso cref="T:Ubiety.Common.Tag" />
+            </summary>
+        </member>
+        <member name="T:Ubiety.Infrastructure.XmppSettings">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Infrastructure.XmppSettings.AuthenticationTypes">
+            <summary>
+                Gets or sets the authentication types to be used when connecting to a server.
+            </summary>
+            <value>
+                The authentication type or types to be used.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.XmppSettings.Id">
+            <summary>
+                Gets or sets the ID of the user for authentication.
+            </summary>
+            <value>
+                The ID.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.XmppSettings.Password">
+            <summary>
+                Gets or sets the users password for authentication.
+            </summary>
+            <value>
+                The password.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.XmppSettings.Hostname">
+            <summary>
+                Gets or sets the hostname used to connect to the server if you don't want to connect to the server provided in the
+                ID.
+            </summary>
+            <value>
+                The hostname.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.XmppSettings.Port">
+            <summary>
+                Gets or sets the port to connect to if your server doesn't support the default 5222 and its not set with SRV.
+            </summary>
+            <value>
+                The port.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.XmppSettings.Ssl">
+            <summary>
+                Gets or sets a value indicating whether this connection should use SSL encryption.
+            </summary>
+            <value>
+                <c>true</c> if SSL is to be used; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Ubiety.Infrastructure.XmppSettings.DiscoManager">
+            <summary>
+                Gets or sets the disco manager.
+            </summary>
+            <value>
+                The disco manager.
+            </value>
+        </member>
+        <member name="T:Ubiety.Net.Address">
+            <summary>
+                Resolves the IM server address from the hostname provided by the XID.
+            </summary>
+        </member>
+        <member name="P:Ubiety.Net.Address.IPv6">
+            <summary>
+                Is the address IPV6?
+            </summary>
+        </member>
+        <member name="T:Ubiety.Net.AsyncSocket">
+            <remarks>
+                AsyncSocket is the class that communicates with the server.
+            </remarks>
+        </member>
+        <member name="P:Ubiety.Net.AsyncSocket.Connected">
+            <summary>
+                Gets the current status of the socket.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Net.AsyncSocket.Connect">
+            <summary>
+                Establishes a connection to the specified remote host.
+            </summary>
+            <returns>True if we connected, false if we didn't</returns>
+        </member>
+        <member name="M:Ubiety.Net.AsyncSocket.Disconnect">
+            <summary>
+                Disconnects the socket from the server.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Net.AsyncSocket.StartSecure">
+            <summary>
+                Encrypts the connection using SSL/TLS
+            </summary>
+        </member>
+        <member name="M:Ubiety.Net.AsyncSocket.Write(System.String)">
+            <summary>
+                Writes data to the current connection.
+            </summary>
+            <param name="msg">Message to send</param>
+        </member>
+        <member name="M:Ubiety.Net.AsyncSocket.StartCompression(System.String)">
+            <summary>
+            </summary>
+            <param name="algorithm"></param>
+        </member>
+        <member name="T:Ubiety.Registries.CompressionRegistry">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Ubiety.Registries.CompressionRegistry.AlgorithmsAvailable">
+            <value>
+                Do we have any algorithms to use?
+            </value>
+        </member>
+        <member name="M:Ubiety.Registries.CompressionRegistry.AddCompression(System.Reflection.Assembly)">
+            <summary>
+                Add a compression stream to the library.  Zlib is the default.
+            </summary>
+            <param name="a">
+                The assembly containing the stream definition.
+            </param>
+        </member>
+        <member name="M:Ubiety.Registries.CompressionRegistry.GetCompression(System.String)">
+            <summary>
+                Creates the stream class for the compression algorithm specified.
+            </summary>
+            <param name="algorithm">
+                The algorithm we want to create the stream for.
+            </param>
+            <returns>
+                The wrapped stream ready for compression.
+            </returns>
+        </member>
+        <member name="M:Ubiety.Registries.CompressionRegistry.SupportsAlgorithm(System.String)">
+            <summary>
+                Does the library support the algorithm the server is requesting.
+            </summary>
+            <param name="algorithm">
+                The algorithm we are looking for.
+            </param>
+            <returns>
+                True if we have a stream class available.  False if not.
+            </returns>
+        </member>
+        <member name="T:Ubiety.Registries.TagRegistry">
+            <remarks>
+                TagRegistry stores all the construction information for the <seealso cref="T:Ubiety.Common.Tag">Tags</seealso> the library is aware
+                of.
+            </remarks>
+        </member>
+        <member name="M:Ubiety.Registries.TagRegistry.AddAssembly(System.Reflection.Assembly)">
+            <summary>
+                Used to add <seealso cref="T:Ubiety.Common.Tag">Tag(s)</seealso> to the registry. Using attributes the <see cref="T:Ubiety.Registries.TagRegistry" />
+                looks for and adds any appropriate tags found in the assembly.
+            </summary>
+            <param name="assembly">The assembly to search for tags</param>
+        </member>
+        <member name="M:Ubiety.Registries.TagRegistry.GetTag``1(System.String,System.String)">
+            <summary>
+            </summary>
+            <param name="name"></param>
+            <param name="ns"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ubiety.Registries.TagRegistry.GetTag``1(System.Xml.XmlQualifiedName)">
+            <summary>
+                Creates a new instance of the wanted tag.
+            </summary>
+            <param name="qname">Qualified Namespace</param>
+            <returns>A new instance of the requested tag</returns>
+        </member>
+        <member name="T:Ubiety.States.DisconnectedState">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.DisconnectedState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="T:Ubiety.States.BindingState">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.BindingState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="T:Ubiety.States.CompressedState">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.CompressedState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="T:Ubiety.States.ConnectedState">
+            <summary>
+            The state which occurs just after connecting and sends the starting stream:stream tag.
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.ConnectedState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            Executes the state sending the tag to the just connected socket.
+            </summary>
+            <param name="data">
+            The <see cref="T:Ubiety.Common.Tag"/> to parse.  In this case null.
+            </param>
+        </member>
+        <member name="T:Ubiety.States.ConnectingState">
+            <summary>
+            The state used to connect to the server.  The initial state of the library.
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.ConnectingState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            Executes the state.  In this case we are telling the socket to connect to the server.
+            </summary>
+            <param name="data">
+            The <see cref="T:Ubiety.Common.Tag"/> is not needed here as we are just starting the connection.
+            </param>
+        </member>
+        <member name="T:Ubiety.States.DisconnectState">
+            <summary>
+            The state that disconnects from the server.
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.DisconnectState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            Executes the disconnect command by sending the closing stream tag and closing the socket.
+            </summary>
+            <param name="data">
+            No <see cref="T:Ubiety.Common.Tag"/> needed so we pass null.
+            </param>
+        </member>
+        <member name="T:Ubiety.States.ProtocolState">
+            <summary>
+                Keeps track of all the current state information like id, password, socket and the current state.
+            </summary>
+        </member>
+        <member name="P:Ubiety.States.ProtocolState.State">
+            <value>
+                The current state we are in.
+            </value>
+        </member>
+        <member name="P:Ubiety.States.ProtocolState.Socket">
+            <value>
+                The socket used for connecting to the server.
+            </value>
+        </member>
+        <member name="P:Ubiety.States.ProtocolState.Processor">
+            <value>
+                The current SASL processor based on server communication.
+            </value>
+        </member>
+        <member name="P:Ubiety.States.ProtocolState.Authenticated">
+            <value>
+                Are we authenticated yet?
+            </value>
+        </member>
+        <member name="P:Ubiety.States.ProtocolState.Compressed">
+            <summary>
+                Is the stream currently compressed?
+            </summary>
+        </member>
+        <member name="P:Ubiety.States.ProtocolState.Settings">
+            <summary>
+                The current static settings instance
+            </summary>
+        </member>
+        <member name="P:Ubiety.States.ProtocolState.Events">
+            <summary>
+                The current event instance.
+            </summary>
+        </member>
+        <member name="T:Ubiety.States.RunningState">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.RunningState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="T:Ubiety.States.SaslState">
+            <summary>
+                SASL state is used to authenticate the user with the current processor.
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.SaslState.Execute(Ubiety.Common.Tag)">
+            <summary>
+                Execute the actions to authenticate the user.
+            </summary>
+            <param name="data">
+                The <see cref="T:Ubiety.Common.Tag" /> we received from the server.  Probably a challenge or response.
+            </param>
+        </member>
+        <member name="T:Ubiety.States.ServerFeaturesState">
+            <summary>
+                The server features state occurs just after connecting.
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.ServerFeaturesState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="data">
+                A <see cref="T:Ubiety.Common.Tag" />
+            </param>
+        </member>
+        <member name="T:Ubiety.States.SessionState">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.SessionState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="T:Ubiety.States.StartTlsState">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.StartTlsState.Execute(Ubiety.Common.Tag)">
+            <summary>
+            
+            </summary>
+            <param name="data">
+            A <see cref="T:System.Object"/>
+            </param>
+        </member>
+        <member name="T:Ubiety.States.State">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Ubiety.States.State.Execute(Ubiety.Common.Tag)">
+            <summary>
+            </summary>
+            <param name="data">
+                A <see cref="T:System.Object" />
+            </param>
+        </member>
+        <member name="T:Ubiety.Xmpp">
+            <summary>
+                Implements the XMPP(Jabber) Core and IM protocols
+            </summary>
+            <remarks>
+                <para>
+                    The Extensible Messaging and Presence Protocol (XMPP) is an open XML technology for real-time
+                    communications, which powers a wide range of applications including instant messaging, presence,
+                    media negotiation, white boarding, collaboration, lightweight middle-ware, content syndication, and
+                    generalized XML delivery.
+                </para>
+                <para>
+                    This library is an implementation of this protocol.  Those involved with the design and development
+                    of this library are as committed to open standards as the committees who created the original protocol.
+                </para>
+            </remarks>
+            <example>
+                <code>
+             using Ubiety;
+             using Ubiety.Common;
+            
+             public class Test
+             {
+            		public static Main()
+            		{
+            			// Create a new instance of the XMPP class
+            			Xmpp ubiety = new Xmpp();
+                        ubiety.Settings.Id = new JID("user@jabber.org/chat");
+                        ubiety.Settings.Password = "password";
+            			
+                        ubiety.Connect();
+            		}
+             }
+             </code>
+            </example>
+        </member>
+        <member name="F:Ubiety.Xmpp.Version">
+            <summary>
+                Version of the library.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Xmpp.#ctor">
+            <summary>
+                Initializes a new instance of the <see cref="T:Ubiety.Xmpp" /> class.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Xmpp.Connect">
+            <summary>
+                Connects this instance to an XMPP server.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Xmpp.Disconnect">
+            <summary>
+                Disconnects this instance from the server.
+            </summary>
+        </member>
+        <member name="M:Ubiety.Xmpp.Send(Ubiety.Common.Tag)">
+            <summary>
+                Send a message to the server via a Tag
+            </summary>
+            <param name="tag">Tag to send to the server</param>
+        </member>
+        <member name="M:Ubiety.Xmpp.Send(Ubiety.Infrastructure.TagEventArgs)">
+            <summary>
+                Send a message to the server via a Tag
+            </summary>
+            <param name="args">Event argument containing tag to send to the server</param>
+        </member>
+        <member name="E:Ubiety.Xmpp.OnError">
+            <summary>
+                An error occurred
+            </summary>
+        </member>
+        <member name="E:Ubiety.Xmpp.OnNewTag">
+            <summary>
+            A new tag has arrived from the server
+            </summary>
+        </member>
+        <member name="P:Ubiety.Xmpp.Connected">
+            <summary>
+                Gets a value indicating whether this <see cref="T:Ubiety.Xmpp" /> is connected to a server.
+            </summary>
+            <value>
+                <c>true</c> if connected; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Ubiety.Xmpp.Settings">
+            <summary>
+                Current settings of the application including Id and Password.
+            </summary>
+        </member>
+    </members>
+</doc>

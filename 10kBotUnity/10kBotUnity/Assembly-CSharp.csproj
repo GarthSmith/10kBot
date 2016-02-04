@@ -45,6 +45,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Code\Livecoding\Livecoding.cs" />
+     <Compile Include="Assets\Code\LogQueue.cs" />
      <Compile Include="Assets\Code\Manager.cs" />
      <Compile Include="Assets\Code\MyTwitchBot\Games.cs" />
      <Compile Include="Assets\Code\MyTwitchBot\Logger.cs" />
@@ -53,11 +55,79 @@
      <Compile Include="Assets\Code\ThreadHelper.cs" />
      <Compile Include="Assets\Code\TwitchFromScratch.cs" />
      <Compile Include="Assets\Code\TwitchIrc.cs" />
+     <Compile Include="Assets\ubiety\Common\Compression\Zlib.cs" />
+     <Compile Include="Assets\ubiety\Common\ErrorType.cs" />
+     <Compile Include="Assets\ubiety\Common\Exceptions\ServerXmlException.cs" />
+     <Compile Include="Assets\ubiety\Common\ICompression.cs" />
+     <Compile Include="Assets\ubiety\Common\JID.cs" />
+     <Compile Include="Assets\ubiety\Common\Namespaces.cs" />
+     <Compile Include="Assets\ubiety\Common\Roster\DefaultRosterManager.cs" />
+     <Compile Include="Assets\ubiety\Common\Roster\IRosterManager.cs" />
+     <Compile Include="Assets\ubiety\Common\SASL\MD5Processor.cs" />
+     <Compile Include="Assets\ubiety\Common\SASL\PlainProcessor.cs" />
+     <Compile Include="Assets\ubiety\Common\SASL\SASLProcessor.cs" />
+     <Compile Include="Assets\ubiety\Common\SASL\SCRAMProcessor.cs" />
+     <Compile Include="Assets\ubiety\Common\Stanza.cs" />
+     <Compile Include="Assets\ubiety\Common\Tag.cs" />
+     <Compile Include="Assets\ubiety\Common\disco\Entity.cs" />
+     <Compile Include="Assets\ubiety\Common\disco\IDiscoManager.cs" />
+     <Compile Include="Assets\ubiety\Common\disco\RegistryDiscoManager.cs" />
+     <Compile Include="Assets\ubiety\Core\Bind.cs" />
+     <Compile Include="Assets\ubiety\Core\Compression.cs" />
+     <Compile Include="Assets\ubiety\Core\Error.cs" />
+     <Compile Include="Assets\ubiety\Core\Features.cs" />
+     <Compile Include="Assets\ubiety\Core\GenericTag.cs" />
+     <Compile Include="Assets\ubiety\Core\Iq\Iq.cs" />
+     <Compile Include="Assets\ubiety\Core\Iq\Query.cs" />
+     <Compile Include="Assets\ubiety\Core\Jid.cs" />
+     <Compile Include="Assets\ubiety\Core\Mechanisms.cs" />
+     <Compile Include="Assets\ubiety\Core\SASL\Auth.cs" />
+     <Compile Include="Assets\ubiety\Core\StartTLS.cs" />
+     <Compile Include="Assets\ubiety\Core\Stream.cs" />
+     <Compile Include="Assets\ubiety\Core\disco\C.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\ProtocolParser.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\XmppEvents.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\XmppSettings.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\attributes\CompressionAttribute.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\attributes\XmppTagAttribute.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\extensions\AssemblyExtensions.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\extensions\ByteExtensions.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\extensions\EnumerableExtensions.cs" />
+     <Compile Include="Assets\ubiety\Infrastructure\extensions\TypeExtensions.cs" />
+     <Compile Include="Assets\ubiety\Properties\AssemblyInfo.cs" />
+     <Compile Include="Assets\ubiety\XMPP.cs" />
+     <Compile Include="Assets\ubiety\net\Address.cs" />
+     <Compile Include="Assets\ubiety\net\AsyncSocket.cs" />
+     <Compile Include="Assets\ubiety\registries\CompressionRegistry.cs" />
+     <Compile Include="Assets\ubiety\registries\TagRegistry.cs" />
+     <Compile Include="Assets\ubiety\states\BindingState.cs" />
+     <Compile Include="Assets\ubiety\states\CompressedState.cs" />
+     <Compile Include="Assets\ubiety\states\ConnectedState.cs" />
+     <Compile Include="Assets\ubiety\states\ConnectingState.cs" />
+     <Compile Include="Assets\ubiety\states\DisconnectState.cs" />
+     <Compile Include="Assets\ubiety\states\DisconnectedState.cs" />
+     <Compile Include="Assets\ubiety\states\ProtocolState.cs" />
+     <Compile Include="Assets\ubiety\states\RunningState.cs" />
+     <Compile Include="Assets\ubiety\states\SASLState.cs" />
+     <Compile Include="Assets\ubiety\states\ServerFeaturesState.cs" />
+     <Compile Include="Assets\ubiety\states\SessionState.cs" />
+     <Compile Include="Assets\ubiety\states\StartTLSState.cs" />
+     <Compile Include="Assets\ubiety\states\State.cs" />
+     <None Include="Assets\ubiety\xmpp.xml" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity 5.3.1p3/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity 5.3.1p3/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="Heijden.Dns">
+ <HintPath>C:/Users/10kTactics/Projects/10kBot/10kBotUnity/10kBotUnity/Assets/ubiety/packages/Heijden.Dns.1.0.0/lib/net35/Heijden.Dns.dll</HintPath>
+ </Reference>
+ <Reference Include="libidn">
+ <HintPath>C:/Users/10kTactics/Projects/10kBot/10kBotUnity/10kBotUnity/Assets/ubiety/packages/libidn.1.29.1/lib/libidn.dll</HintPath>
+ </Reference>
+ <Reference Include="ICSharpCode.SharpZipLib">
+ <HintPath>C:/Users/10kTactics/Projects/10kBot/10kBotUnity/10kBotUnity/Assets/ubiety/packages/SharpZipLib.0.86.0/lib/20/ICSharpCode.SharpZipLib.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

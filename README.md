@@ -1,4 +1,4 @@
-# mtb
-My Twitch Bot
+# 10kBot
+10kBot
 
-Thanks for Endlesszocker for making this bot public!
+Bot that connects to twitch.tv/10kTactics and livecoding.tv/10kTactics and does stuff!
