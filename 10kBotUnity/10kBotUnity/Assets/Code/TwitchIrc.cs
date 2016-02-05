@@ -26,7 +26,7 @@ public class ChannelMessageEventArgs : EventArgs
     }
 }
 
-public class TwitchIrc : MonoBehaviour
+public class TwitchIrc : MonoBehaviour, IChat
 {
     #region variables
     public Text ChannelUiText;
@@ -181,6 +181,8 @@ public class TwitchIrc : MonoBehaviour
         }
     }
     bool sentMessage;
+
+    public event Action<string, string> MessageReceived;
 
     private void OnChannelMessage(ChannelMessageEventArgs channelMessageEventArgs)
     {

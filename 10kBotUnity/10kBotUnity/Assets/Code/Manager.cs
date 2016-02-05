@@ -1,27 +1,32 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using MTB;
-using System.Linq;
 
 public class Manager : MonoBehaviour
 {
     public Text ChannelText;
-    //public Twitch Twitch;
+    TwitchIrc Twitch;
+    Livecoding Livecoding;
 
-    public void OnEnable()
+    void Awake()
     {
-        //Twitch.Message += AppendMessage;
-        // Twitch.Login();
+        Livecoding = gameObject.AddComponent<Livecoding>();
+        Twitch = gameObject.AddComponent<TwitchIrc>();
     }
 
-    private void AppendMessage(string obj)
+    protected void OnEnable()
     {
-        ChannelText.text += "\n" + obj;
+        Livecoding.MessageReceived += AppendMessage;
+        Twitch.MessageReceived += AppendMessage;
     }
 
-    public void Disconnect()
+    protected void OnDisable()
     {
-        //Twitch.LogOut();
-        //Twitch.Message -= AppendMessage;
+        Livecoding.MessageReceived -= AppendMessage;
+        Twitch.MessageReceived -= AppendMessage;
+    }
+
+    private void AppendMessage(string name, string message)
+    {
+        ChannelText.text += "\n" + name + ": " + message;
     }
 }
