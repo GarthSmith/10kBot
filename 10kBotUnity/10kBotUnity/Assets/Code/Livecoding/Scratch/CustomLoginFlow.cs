@@ -137,11 +137,10 @@ public class CustomLoginFlow : MonoBehaviour
 
     private void RequestPlainSasl()
     {
-        // string requestString = @"<sasl:auth mechanism='PLAIN'/>";
-        // string requestString = @"<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='PLAIN'/>";
-        //string requestStringEnd = "</auth>";
-        string requestString2 = @"<auth xmlns=""urn:ietf:params:xml:ns:xmpp-sasl"" mechanism=""PLAIN""></auth>"; // Need to put in hash here sorry not committing mine to github!
-        byte[] message = Encoding.UTF8.GetBytes(requestString2);
+        // Remove old key and change password.
+        string requestString = @"<auth xmlns=""urn:ietf:params:xml:ns:xmpp-sasl"" mechanism=""PLAIN"">" + Password + "</auth>";
+
+        byte[] message = Encoding.UTF8.GetBytes(requestString);
         // byte[] pass = C
         // Set up new readers and writers.
         Debug.Log("Sending Plain Sasl request.");
@@ -280,6 +279,8 @@ public class CustomLoginFlow : MonoBehaviour
             path += @"\livecodingpasshash.txt";
             string password = File.ReadAllText(path);
             password = password.Trim();
+            if (string.IsNullOrEmpty(password))
+                throw new Exception("Missing password");
             return password;
         }
     }
