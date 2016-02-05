@@ -134,7 +134,7 @@ public class Livecoding : MonoBehaviour, IChat
         // Eg:
         // <message from='10ktactics@chat.livecoding.tv/xmetrix' to='10kbot@livecoding.tv/27180579011454665231434439' type='groupchat' id='149'><body xmlns='jabber:client'>bet its a pitbull</body><x xmlns='jabber:x:event'><composing/></x><delay xmlns='urn:xmpp:delay' from='10ktactics@chat.livecoding.tv' stamp='2016-02-05T07:50:55.210Z'/><x xmlns='jabber:x:delay' from='10ktactics@chat.livecoding.tv' stamp='20160205T07:50:55'/></message>
 
-        if (CumulativeXml.Contains(StartMessageToken))
+        while (CumulativeXml.Contains(StartMessageToken))
         {
             // Start to process. We don't care about anything before the message.
             CumulativeXml = TrimFront(CumulativeXml);
@@ -150,6 +150,8 @@ public class Livecoding : MonoBehaviour, IChat
     private void ProcessXml(string singleMessageXml)
     {
         if (string.IsNullOrEmpty(singleMessageXml))
+            return;
+        if (!singleMessageXml.StartsWith(StartMessageToken) || !singleMessageXml.EndsWith(EndMessageToken))
             return;
         Debug.Log("About to parse singlemessagexml\n" + singleMessageXml);
         XmlDocument messageDoc = new XmlDocument();
@@ -187,25 +189,14 @@ public class Livecoding : MonoBehaviour, IChat
                 Debug.Log("How are we missing the from attribute from message doc? " + messageDoc.OuterXml);
             }
         }
+
         // TODO: How to get body child element from messageDoc.
-        var bodyNode = messageNode.SelectSingleNode(".//body");
-        if (bodyNode != null)
-        {
-            Debug.Log("Found body node.");
-            message = bodyNode.InnerText;
-        }
-        else
-        {
-            Debug.Log("Could not find body node.");
-        }
-        /*foreach (XmlNode childNode in messageDoc.ChildNodes)
-        {
-            if (childNode.Name == "body")
-            {
-                message = childNode.InnerText;
-                break;
-            }
-        }*/
+        message = messageNode.InnerXml;
+        Debug.Log("Got messageNode.InnerXml: " + message);
+        // Chop <body ...> part of beginning of message.
+        message = message.Substring(StartMessageBodyToken.Length);
+        // Chop </body>... off the end
+        message = message.Substring(0, message.IndexOf(EndMessageBodyToken));
 
         Debug.Log("Got nickname " + nickname + " and message " + message);
         if (MessageReceived != null && !string.IsNullOrEmpty(nickname) && !string.IsNullOrEmpty(message))
@@ -396,4 +387,6 @@ public class Livecoding : MonoBehaviour, IChat
 
     const string StartMessageToken = @"<message ";
     const string EndMessageToken = @"</message>";
+    const string StartMessageBodyToken = @"<body xmlns='jabber:client'>";
+    const string EndMessageBodyToken = @"</body>";
 }
