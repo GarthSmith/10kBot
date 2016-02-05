@@ -6,8 +6,9 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using MTB;
 
-public class Twitch : MonoBehaviour
+public class Twitch : MonoBehaviour, IChat
 {
+    public event Action<string, string> MessageReceived;
     public Action<string> Message;
 
     public const string Server = "irc.twitch.tv";
@@ -71,8 +72,8 @@ public class Twitch : MonoBehaviour
     }*/
 
     Regex someExpression = new Regex(@"(?::(?<Prefix>[^ ]+) +)?(?<Command>[^ :]+)(?<middle>(?: +[^ :]+))*(?<coda> +:(?<trailing>.*)?)?");
-   
 
+    
 
     private void ParseData(string data)
     {
@@ -83,9 +84,6 @@ public class Twitch : MonoBehaviour
 
         // split the data into parts
         string[] ircData = data.Split(' ');
-
-
-
 
         // if the message starts with PING we must PONG back
         if (data.Length > 4)
