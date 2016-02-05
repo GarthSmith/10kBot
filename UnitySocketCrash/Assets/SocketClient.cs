@@ -190,6 +190,8 @@ public class ClientSocket
             }
 
             _socket.BeginConnect(endPoint, new AsyncCallback(EndConnect), null);
+            // Socket anotherOne = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            // anotherOne.Connect(endPoint);
         }
         catch (Exception ex)
         {

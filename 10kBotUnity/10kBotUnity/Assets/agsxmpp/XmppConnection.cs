@@ -179,6 +179,11 @@ namespace agsXMPP
 			get { return m_ClientSocket; }
 		}
 
+        public ClientSocket ProblemSocket
+        {
+            get { return m_ClientSocket as ClientSocket; }
+        }
+
         /// <summary>
         /// the underlaying XMPP StreamParser. Normally you don't need it, but we make it accessible for
         /// low level access to the stream
@@ -347,7 +352,7 @@ namespace agsXMPP
 		public virtual void SocketConnect()
 		{
 			DoChangeXmppConnectionState(XmppConnectionState.Connecting);
-            LogQueue.Log("Attempting to connect using ClientSocket type " + ClientSocket.GetType());
+            UnityEngine.Debug.Log("Attempting to connect using ClientSocket type " + ClientSocket.GetType());
 			ClientSocket.Connect();
 		}
 		

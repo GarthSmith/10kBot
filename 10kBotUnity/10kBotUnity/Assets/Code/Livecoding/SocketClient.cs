@@ -1,4 +1,4 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Copyright (c) 2003-2008 by AG-Software 											 *
  * All Rights Reserved.																 *
  * Contact information for AG-Software is available at http://www.ag-software.de	 *
@@ -29,29 +29,11 @@ using System.Configuration;
 using System.Collections;
 using System.Diagnostics;
 
-#if SSL
-using System.Net.Security;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-#endif
-
-#if MONOSSL
-using System.Security.Cryptography.X509Certificates;
-using Mono.Security.Protocol.Tls;
-#endif
-
-#if BCCRYPTO
-using Org.BouncyCastle.Crypto.Tls;
-#endif
-
-using agsXMPP.IO.Compression;
-
-using agsXMPP;
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-namespace agsXMPP.net
+namespace UnitySocketTest
 {
     // using Mono.Security.Protocol.Tls;
 
@@ -65,9 +47,8 @@ namespace agsXMPP.net
     /// <summary>
     /// Use async sockets to connect, send and receive data over TCP sockets.
     /// </summary>
-    public class ClientSocket : BaseSocket
+    public class ClientSocket
     {
-        public Socket ProblemSocket { get { return _socket; } }
         Socket _socket;
         SslStream m_SSLStream;
 #if MONOSSL
@@ -117,20 +98,14 @@ namespace agsXMPP.net
             set { m_SSL = value; }
         }
 
-        /*public bool SupportsStartTls
-        {
-            get { return MSupportsStartTls; }
-            set { MSupportsStartTls = value; }
-        }*/
-
-        // bool MSupportsStartTls = true;
+        public const bool SupportsStartTls = true;
 
         /// <summary>
         /// Returns true if the socket is connected to the server. The property 
         /// Socket.Connected does not always indicate if the socket is currently 
         /// connected, this polls the socket to determine the latest connection state.
         /// </summary>
-        public override bool Connected
+        public bool Connected
         {
             get
             {
@@ -178,12 +153,12 @@ namespace agsXMPP.net
 
             Connect();
         }
-        // public override string Address { get; set; }
-        // public override int Port { get; set; }
+        public string Address;
+        public int Port;
 
-        public override void Connect()
+        public void Connect()
         {
-            // UnityEngine.Debug.Log("SocketClient.Connect() is running.");
+            UnityEngine.Debug.Log("SocketClient.Connect() is running.");
             // Socket is never compressed at startup
             m_Compressed = false;
 
@@ -216,23 +191,8 @@ namespace agsXMPP.net
                     _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 }
 
-                UnityEngine.Debug.LogWarning("OPENING Socket connection. This must be shut down!");
-                // _socket.BeginConnect(endPoint, new AsyncCallback(EndConnect), null);
-
-                SocketAsyncEventArgs connectAsyncArgs = new SocketAsyncEventArgs();
-                connectAsyncArgs.Completed += EndConnect;
-                connectAsyncArgs.RemoteEndPoint = endPoint;
-                if (_socket.ConnectAsync(connectAsyncArgs))
-                {
-                    UnityEngine.Debug.Log("ConnectAsync needs to complete.");
-                    // Wait for it.
-                }
-                else
-                {
-                    // Already done.
-                    UnityEngine.Debug.Log("ConnectAsync finished right away.");
-                    EndConnect(null, connectAsyncArgs);
-                }
+                UnityEngine.Debug.LogWarning("Socket is opening a connection. This must be shut off or else it will block future threads!");
+                _socket.BeginConnect(endPoint, new AsyncCallback(EndConnect), null);
             }
             catch (Exception ex)
             {
@@ -240,51 +200,8 @@ namespace agsXMPP.net
             }
         }
 
-        private void EndConnect(object sender, SocketAsyncEventArgs ar)
-        {
-            UnityEngine.Debug.Log("EndConnect means we finished socket connection.");
-
-            if (m_ConnectTimedOut)
-            {
-                UnityEngine.Debug.Log("Timed out.");
-                // base.FireOnError(new ConnectTimeoutException("Attempt to connect timed out"));
-            }
-            else
-            {
-                UnityEngine.Debug.Log("We did not time out.");
-                try
-                {
-                    // stop the timeout timer
-                    connectTimeoutTimer.Dispose();
-
-                    // pass connection status with event
-                    // _socket.EndConnect(ar);
-                    UnityEngine.Debug.Log("Creating new NetworkStream.");
-                    m_Stream = new NetworkStream(_socket, false);
-
-                    m_NetworkStream = m_Stream;
-
-                    if (m_SSL)
-                        InitSSL();
-
-                    UnityEngine.Debug.Log("Connected!");
-                    // FireOnConnect();
-
-                    // Setup Receive Callback
-                    this.Receive();
-                }
-                catch (Exception ex)
-                {
-                    UnityEngine.Debug.Log("Got " + ex + " when trying to end connection. " + ex.Message);
-                    UnityEngine.Debug.LogError("SocketErrors: " + ar.SocketError);
-                }
-            }
-        }
-
         private void EndConnect(IAsyncResult ar)
         {
-            UnityEngine.Debug.Log("EndConnect means we finished socket connection.");
-
             if (m_ConnectTimedOut)
             {
                 UnityEngine.Debug.Log("Timed out.");
@@ -292,7 +209,6 @@ namespace agsXMPP.net
             }
             else
             {
-                UnityEngine.Debug.Log("We did not time out.");
                 try
                 {
                     // stop the timeout timer
@@ -300,7 +216,7 @@ namespace agsXMPP.net
 
                     // pass connection status with event
                     _socket.EndConnect(ar);
-                    UnityEngine.Debug.Log("Creating new NetworkStream.");
+
                     m_Stream = new NetworkStream(_socket, false);
 
                     m_NetworkStream = m_Stream;
@@ -308,7 +224,7 @@ namespace agsXMPP.net
                     if (m_SSL)
                         InitSSL();
 
-                    UnityEngine.Debug.Log("Connected!");
+                    // UnityEngine.Debug.Log("Connected!");
                     // FireOnConnect();
 
                     // Setup Receive Callback
@@ -330,15 +246,15 @@ namespace agsXMPP.net
             // for compression debug statisticsUnityEngine.Debug.Log("Connect Timeout");
             connectTimeoutTimer.Dispose();
             m_ConnectTimedOut = true;
-            UnityEngine.Debug.LogWarning("Closing socket connection due to timeout.");
+            // This must happen each time we connect a socket.
+            UnityEngine.Debug.LogWarning("Closing socket!");
             _socket.Close();
-            _socket.Dispose();
         }
 
         /// <summary>
         /// Starts TLS on a "normal" connection
         /// </summary>
-        public override void StartTls()
+        public void StartTls()
         {
             SslProtocols protocol = SslProtocols.Tls;
             InitSSL(protocol);
@@ -525,7 +441,7 @@ namespace agsXMPP.net
         /// <summary>
         /// Start Compression on the socket
         /// </summary>
-        public override void StartCompression()
+        public void StartCompression()
         {
             InitCompression();
         }
@@ -548,7 +464,7 @@ namespace agsXMPP.net
         /// <summary>
         /// Disconnect from the server.
         /// </summary>
-        public override void Disconnect()
+        public void Disconnect()
         {
             // base.Disconnect();
 
@@ -574,7 +490,6 @@ namespace agsXMPP.net
             {
                 // next, close the socket which terminates any pending
                 // async operations
-                UnityEngine.Debug.LogWarning("Closing socket connection due to Disconnect().");
                 _socket.Close();
             }
             catch { }
@@ -587,7 +502,7 @@ namespace agsXMPP.net
         /// 
         /// </summary>
         /// <param name="data"></param>
-        public override void Send(string data)
+        public void Send(string data)
         {
             Send(Encoding.UTF8.GetBytes(data));
         }
@@ -595,7 +510,7 @@ namespace agsXMPP.net
         /// <summary>
         /// Send data to the server.
         /// </summary>
-        public override void Send(byte[] bData)
+        public void Send(byte[] bData)
         {
             lock (this)
             {
@@ -721,12 +636,7 @@ namespace agsXMPP.net
             }
         }
 
-        public override long ConnectTimeout
-        {
-            get { return MConnectTimeout; }
-            set { MConnectTimeout = value; }
-        }
-        private long MConnectTimeout = 200000;
+        public long ConnectTimeout = 10000;
 
         #region << compression functions >>
         /*

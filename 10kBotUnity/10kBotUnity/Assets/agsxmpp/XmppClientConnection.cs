@@ -55,6 +55,7 @@ using agsXMPP.net.dns;
 
 
 using agsXMPP.Idn;
+using UnityEngine;
 
 #if MONOSSL
 using  Mono.Security.Protocol.Tls;
@@ -686,7 +687,7 @@ namespace agsXMPP
                
 		private void _Open()
 		{
-            LogQueue.Log("XmppClientConnection._Open()");
+            UnityEngine.Debug.Log("XmppClientConnection._Open()");
             m_CleanUpDone   = false;
             m_StreamStarted = false;
 
@@ -708,9 +709,14 @@ namespace agsXMPP
         private void OpenSocket()
         {
             if (ConnectServer == null)
+            {
+                Debug.Log("Opening Socket with BASE server and port info.");
                 SocketConnect(base.Server, base.Port);
-            else
+            }
+            else {
+                Debug.Log("Opening Socket with THIS server and port info.");
                 SocketConnect(this.ConnectServer, base.Port);
+            }
         }
 
         #region << SRV functions >>
@@ -841,7 +847,7 @@ namespace agsXMPP
                 if (totalWeight > 0)
                 {
                     // Create a random value between 1 - total Weight
-                    int rnd = new Random().Next(1, totalWeight);
+                    int rnd = new System.Random().Next(1, totalWeight);
                     int i = 0;
                     foreach (SRVRecord sr in lowServers)
                     {
@@ -859,7 +865,7 @@ namespace agsXMPP
                 else
                 {
                     // Servers have no weight, they are all equal, pick a random server
-                    int rnd = new Random().Next(lowServers.Count);                    
+                    int rnd = new System.Random().Next(lowServers.Count);                    
                     ret = (SRVRecord) lowServers[rnd];                    
                 }
             }

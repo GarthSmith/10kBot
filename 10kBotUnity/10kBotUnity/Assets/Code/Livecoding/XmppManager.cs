@@ -8,17 +8,24 @@ using agsXMPP.protocol.iq.disco;
 using agsXMPP.Xml.Dom;
 using System;
 using System.IO;
+using UnityEngine;
 using System.Threading;
+using System.Net.Sockets;
+using agsXMPP.net;
 
 public class XmppManager
 {
     static bool _bWait;
     private static Jid chatjid;
     private static XmppClientConnection conn;
+    private Jid jid;
+
+    public ClientSocket ProblemSocket {  get { return conn == null ? null : conn.ProblemSocket; } }
+
 
     public void Go()
     {
-        LogQueue.Log("XmppManager is Go()ing!");
+        Debug.Log("XmppManager is Go()ing!");
         //set the default chatroom we want to join 
         chatjid = new Jid("10ktactics@chat.livecoding.tv");
         //create a new client connection
@@ -38,7 +45,18 @@ public class XmppManager
         conn.OnStreamError += conn_OnStreamError;
         conn.OnXmppConnectionStateChanged += conn_OnXmppConnectionStateChanged;
 
-        Connect();
+        // LogQueue.Log("XmppManager is Connect()ing!");
+        jid = new Jid("10kbot@livecoding.tv");
+        conn.Server = jid.Server;
+        conn.Username = jid.User;
+        conn.Password = Password;
+        conn.Resource = null;
+        conn.Priority = 10;
+        conn.Port = 5222;
+        conn.UseSSL = false;
+        conn.AutoResolveConnectServer = true;
+        conn.UseStartTLS = true;
+        Debug.Log("Ready to connect!");
     }
 
     private static void conn_OnXmppConnectionStateChanged(object sender, XmppConnectionState state)
@@ -92,10 +110,10 @@ public class XmppManager
         PrintEvent("Receieved " + ex + " from " + sender + ". " + ex.Message);
     }
 
-    private static void Connect()
+    public static void Connect()
     {
-        LogQueue.Log("XmppManager is Connect()ing!");
-        Jid jid = new Jid("10kbot@livecoding.tv");
+        Debug.Log("XmppManager is Connect()ing!");
+        /*Jid jid = new Jid("10kbot@livecoding.tv");
         conn.Server = jid.Server;
         conn.Username = jid.User;
         conn.Password = Password;
@@ -104,9 +122,9 @@ public class XmppManager
         conn.Port = 5222;
         conn.UseSSL = false;
         conn.AutoResolveConnectServer = true;
-        conn.UseStartTLS = true;
+        conn.UseStartTLS = true;*/
         conn.Open();
-        PrintInfo("Connection attempted/opened");
+        Debug.Log("Connection attempted/opened");
         // Wait("Waiting 2 seconds for response.");
         //return if disconnected
         // if (conn.XmppConnectionState == XmppConnectionState.Disconnected)
@@ -164,7 +182,7 @@ public class XmppManager
     static void PrintEvent(string msg)
     {
 #if UNITY_5
-        LogQueue.Log(msg);
+        UnityEngine.Debug.Log(msg);
 #else
             ConsoleColor current = Console.BackgroundColor;
             Console.BackgroundColor = ConsoleColor.DarkGreen;
@@ -176,7 +194,7 @@ public class XmppManager
     static void PrintInfo(string msg)
     {
 #if UNITY_5
-        LogQueue.Log(msg);
+        UnityEngine.Debug.Log(msg);
 #else
             ConsoleColor current = Console.BackgroundColor;
             Console.BackgroundColor = ConsoleColor.Red;
@@ -188,7 +206,7 @@ public class XmppManager
     static void PrintHelp(string msg)
     {
 #if UNITY_5
-        LogQueue.Log(msg);
+        UnityEngine.Debug.Log(msg);
 #else
             ConsoleColor current = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Yellow;

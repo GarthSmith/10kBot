@@ -71,8 +71,6 @@ public class TwitchIrc : MonoBehaviour
             ircTcpClient = new TcpClient(ServerName, ServerPort);
             stream = ircTcpClient.GetStream();
             reader = new StreamReader(stream);
-
-
             writer = new StreamWriter(stream);
 
             Send("USER " + Username + "tmi twitch :" + Username);

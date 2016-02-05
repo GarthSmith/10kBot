@@ -149,7 +149,7 @@ namespace agsXMPP.net.dns
 
 				// we'll be send and receiving a UDP packet
 				Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-			
+                UnityEngine.Debug.LogWarning("Resolver is using a socket.");
 				// we will wait at most 1 second for a dns reply
 				socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, _udpTimeout);
 
@@ -181,8 +181,9 @@ namespace agsXMPP.net.dns
 					// increase the unique id
 					_uniqueId++;
 
-					// close the socket
-					socket.Close();
+                    // close the socket
+                    UnityEngine.Debug.LogWarning("Resolver is closing a socket.");
+                    socket.Close();
 				}
 			}
 		

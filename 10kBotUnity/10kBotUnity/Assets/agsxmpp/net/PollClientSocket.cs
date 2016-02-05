@@ -55,7 +55,8 @@ namespace agsXMPP.net
 #endif
 		
 		public PollClientSocket()
-		{            
+		{
+            UnityEngine.Debug.LogError("PollClientSocket is being created.");
 		}
 
 		#region << Properties and Members >>

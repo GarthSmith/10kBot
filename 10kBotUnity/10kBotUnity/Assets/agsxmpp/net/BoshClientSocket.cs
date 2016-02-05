@@ -43,7 +43,7 @@ namespace agsXMPP.net
 
         DateTime m_Started;
 
-        
+
         WebRequest m_WebRequest = null;
         Stream m_RequestStream = null;
         string m_Output = null;
@@ -97,63 +97,64 @@ namespace agsXMPP.net
             get { return m_Aborted; }
             set { m_Aborted = value; }
         }
-    } 
+    }
 
     public class BoshClientSocket : BaseSocket
     {
-        private const string    CONTENT_TYPE        = "text/xml; charset=utf-8";
-        private const string    METHOD              = "POST";
-        private const string    BOSH_VERSION        = "1.6";
-        private const int       WEBREQUEST_TIMEOUT  = 5000;
-        private const int       OFFSET_WAIT         = 5000; 
-        
-        private string[]        Keys;                                   // Array of keys
-        private int             waitingRequests = 0;                    // currently active (waiting) WebRequests
-        private int             CurrentKeyIdx;                          // index of the currect key
-        private Queue           m_SendQueue     = new Queue();          // Queue for stanzas to send
-        private bool            streamStarted   = false;                // is the stream started? received stream header?
-        private int             polling         = 0;
-        private bool            terminate       = false;
-        private bool            terminated      = false;
-        private DateTime        lastSend        = DateTime.MinValue;    // DateTime of the last activity/response
-             
-        private bool            m_KeepAlive     = true;
-        
-        private long            rid;
-        private bool            restart         = false;                // stream state, are we currently restarting the stream?
-        private string          sid;
+        private const string CONTENT_TYPE = "text/xml; charset=utf-8";
+        private const string METHOD = "POST";
+        private const string BOSH_VERSION = "1.6";
+        private const int WEBREQUEST_TIMEOUT = 5000;
+        private const int OFFSET_WAIT = 5000;
+
+        private string[] Keys;                                   // Array of keys
+        private int waitingRequests = 0;                    // currently active (waiting) WebRequests
+        private int CurrentKeyIdx;                          // index of the currect key
+        private Queue m_SendQueue = new Queue();          // Queue for stanzas to send
+        private bool streamStarted = false;                // is the stream started? received stream header?
+        private int polling = 0;
+        private bool terminate = false;
+        private bool terminated = false;
+        private DateTime lastSend = DateTime.MinValue;    // DateTime of the last activity/response
+
+        private bool m_KeepAlive = true;
+
+        private long rid;
+        private bool restart = false;                // stream state, are we currently restarting the stream?
+        private string sid;
 
         private int webRequestId = 1;
-        
+
         public BoshClientSocket(XmppConnection con)
         {
+            UnityEngine.Debug.LogError("BoshClientSocket is being constructed.");
             base.m_XmppCon = con;
         }
-        
+
         private void Init()
-        {         
-            Keys          = null;
-            streamStarted   = false;
-            terminate       = false;
-            terminated      = false;
+        {
+            Keys = null;
+            streamStarted = false;
+            terminate = false;
+            terminated = false;
         }
 
         #region << Properties >>
-        private Jid             m_To;
-        private int             m_Wait          = 300;  // 5 minutes by default, if you think this is to long change it over the public property
-        private int             m_Requests      = 2;
-        
+        private Jid m_To;
+        private int m_Wait = 300;  // 5 minutes by default, if you think this is to long change it over the public property
+        private int m_Requests = 2;
+
 #if !CF && !CF_2
-        private int             m_MinCountKeys  = 1000;
-        private int             m_MaxCountKeys  = 9999;        
+        private int m_MinCountKeys = 1000;
+        private int m_MaxCountKeys = 9999;
 #else
 		// set this lower on embedded devices because the key generation is slow there		
         private int             m_MinCountKeys  = 10;
         private int             m_MaxCountKeys  = 99;
 #endif
-        private int             m_Hold          = 1;    // should be 1
-        private int             m_MaxPause      = 0;
-                
+        private int m_Hold = 1;    // should be 1
+        private int m_MaxPause = 0;
+
         public Jid To
         {
             get { return m_To; }
@@ -176,7 +177,7 @@ namespace agsXMPP.net
             get { return m_Requests; }
             set { m_Requests = value; }
         }
- 
+
         public int MaxCountKeys
         {
             get { return m_MaxCountKeys; }
@@ -188,7 +189,7 @@ namespace agsXMPP.net
             get { return m_MinCountKeys; }
             set { m_MinCountKeys = value; }
         }
-        
+
         /// <summary>
         /// This attribute specifies the maximum number of requests the connection manager is allowed to keep waiting 
         /// at any one time during the session. If the client is not able to use HTTP Pipelining then this SHOULD be set to "1".
@@ -258,7 +259,7 @@ namespace agsXMPP.net
         /// Generates a bunch of keys
         /// </summary>
         private void GenerateKeys()
-        {           
+        {
             /*
             13.3 Generating the Key Sequence
 
@@ -306,9 +307,9 @@ namespace agsXMPP.net
         {
             int min = 1;
             int max = int.MaxValue;
-            
+
             Random rnd = new Random();
-            
+
             return rnd.Next(min, max);
         }
 
@@ -322,8 +323,8 @@ namespace agsXMPP.net
         {
             base.Reset();
 
-            streamStarted   = false;
-            restart         = true;
+            streamStarted = false;
+            restart = true;
         }
 
         public void RequestBoshSession()
@@ -367,40 +368,40 @@ namespace agsXMPP.net
              *  xmpp:version='1.0'/>
              */
 
-            body.Version        = BOSH_VERSION;
-            body.XmppVersion    = "1.0";
-            body.Hold           = m_Hold;
-            body.Wait           = m_Wait;
-            body.Rid            = rid;
-            body.Polling        = 0;
-            body.Requests       = m_Requests;
-            body.To             = new Jid(m_XmppCon.Server);           
-           
-            body.NewKey         = Keys[CurrentKeyIdx];
+            body.Version = BOSH_VERSION;
+            body.XmppVersion = "1.0";
+            body.Hold = m_Hold;
+            body.Wait = m_Wait;
+            body.Rid = rid;
+            body.Polling = 0;
+            body.Requests = m_Requests;
+            body.To = new Jid(m_XmppCon.Server);
 
-            body.SetAttribute("xmpp:xmlns", "urn:xmpp:xbosh");            
+            body.NewKey = Keys[CurrentKeyIdx];
+
+            body.SetAttribute("xmpp:xmlns", "urn:xmpp:xbosh");
 
             waitingRequests++;
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(Address);
-            
-            WebRequestState state = new WebRequestState(req);
-            state.Started           = DateTime.Now;
-            state.Output            = body.ToString();
-            state.IsSessionRequest  = true;            
 
-            req.Method          = METHOD;
-            req.ContentType     = CONTENT_TYPE;
-            req.Timeout         = m_Wait * 1000;
-            req.KeepAlive       = m_KeepAlive;
-            req.ContentLength   = state.Output.Length;
+            WebRequestState state = new WebRequestState(req);
+            state.Started = DateTime.Now;
+            state.Output = body.ToString();
+            state.IsSessionRequest = true;
+
+            req.Method = METHOD;
+            req.ContentType = CONTENT_TYPE;
+            req.Timeout = m_Wait * 1000;
+            req.KeepAlive = m_KeepAlive;
+            req.ContentLength = state.Output.Length;
 
             try
             {
                 IAsyncResult result = req.BeginGetRequestStream(new AsyncCallback(this.OnGetSessionRequestStream), state);
             }
             catch (Exception)
-            {                
+            {
             }
         }
 
@@ -410,14 +411,14 @@ namespace agsXMPP.net
 
             HttpWebRequest req = state.WebRequest as HttpWebRequest;
 
-            Stream outputStream = req.EndGetRequestStream(ar);            
-            
+            Stream outputStream = req.EndGetRequestStream(ar);
+
             byte[] bytes = Encoding.UTF8.GetBytes(state.Output);
-               
+
             state.RequestStream = outputStream;
             IAsyncResult result = outputStream.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback(this.OnEndWrite), state);
         }
-        
+
         private void OnGetSessionRequestResponse(IAsyncResult result)
         {
             // grab the custom state object
@@ -457,17 +458,17 @@ namespace agsXMPP.net
                 string res = Encoding.UTF8.GetString(recv, 0, recv.Length);
 
                 ParseResponse(res, ref body, ref stanzas);
-              
+
                 Document doc = new Document();
                 doc.LoadXml(body);
                 Body boshBody = doc.RootElement as Body;
 
-                sid         = boshBody.Sid;
-                polling     = boshBody.Polling;
-                m_MaxPause  = boshBody.MaxPause;
+                sid = boshBody.Sid;
+                polling = boshBody.Polling;
+                m_MaxPause = boshBody.MaxPause;
 
                 byte[] bin = Encoding.UTF8.GetBytes(DummyStreamHeader + stanzas);
-                
+
                 base.FireOnReceive(bin, bin.Length);
 
                 // cleanup webrequest resources
@@ -478,7 +479,7 @@ namespace agsXMPP.net
                 waitingRequests--;
 
                 if (waitingRequests == 0)
-                    StartWebRequest();                
+                    StartWebRequest();
             }
         }
 
@@ -517,10 +518,10 @@ namespace agsXMPP.net
                 stanzas = res.Substring(startPos + 1, endPos - startPos - 1);
             }
         }
-        
+
         #region << Public Methods and Functions >>
         public override void Connect()
-        {            
+        {
             base.Connect();
 
             Init();
@@ -533,7 +534,7 @@ namespace agsXMPP.net
         {
             base.Disconnect();
 
-            FireOnDisconnect();            
+            FireOnDisconnect();
             //m_Connected = false;
         }
 
@@ -561,7 +562,7 @@ namespace agsXMPP.net
                 }
                 return;
             }
-            
+
             if (data.EndsWith("</stream:stream>"))
             {
                 agsXMPP.protocol.client.Presence pres = new agsXMPP.protocol.client.Presence();
@@ -577,7 +578,7 @@ namespace agsXMPP.net
             }
 
             if (waitingRequests <= 1)
-            {                
+            {
                 StartWebRequest();
             }
         }
@@ -589,11 +590,11 @@ namespace agsXMPP.net
             rid++;
 
             StringBuilder sb = new StringBuilder();
-            
+
             Body body = new Body();
-            
-            body.Rid        = rid;            
-            body.Key        = Keys[CurrentKeyIdx];
+
+            body.Rid = rid;
+            body.Key = Keys[CurrentKeyIdx];
 
             if (CurrentKeyIdx == 0)
             {
@@ -603,21 +604,21 @@ namespace agsXMPP.net
                 body.NewKey = Keys[CurrentKeyIdx];
             }
 
-            body.Sid        = sid;
+            body.Sid = sid;
             //body.Polling    = 0;
             body.To = new Jid(m_XmppCon.Server);
 
             if (restart)
             {
                 body.XmppRestart = true;
-                restart = false;               
+                restart = false;
             }
 
             lock (m_SendQueue)
             {
                 if (terminate && m_SendQueue.Count == 1)
                     body.Type = BoshType.terminate;
-            
+
                 if (m_SendQueue.Count > 0)
                 {
                     sb.Append(body.StartTag());
@@ -647,13 +648,13 @@ namespace agsXMPP.net
             lock (this)
             {
                 webRequestId++;
-            }           
-                      
+            }
+
             waitingRequests++;
 
             lastSend = DateTime.Now;
-            
-            HttpWebRequest req = (HttpWebRequest) WebRequest.Create(Address);
+
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(Address);
 
             WebRequestState state = new WebRequestState(req);
             state.Started = DateTime.Now;
@@ -664,12 +665,12 @@ namespace agsXMPP.net
             else
                 state.Output = content;
 
-            req.Method          = METHOD;
-            req.ContentType     = CONTENT_TYPE;
-            req.Timeout         = m_Wait * 1000;
-            req.KeepAlive       = m_KeepAlive;       
-            req.ContentLength   = state.Output.Length;
-            
+            req.Method = METHOD;
+            req.ContentType = CONTENT_TYPE;
+            req.Timeout = m_Wait * 1000;
+            req.KeepAlive = m_KeepAlive;
+            req.ContentLength = state.Output.Length;
+
             // Create the delegate that invokes methods for the timer.            
             TimerCallback timerDelegate = new TimerCallback(TimeOutGetRequestStream);
             Timer timeoutTimer = new Timer(timerDelegate, state, WEBREQUEST_TIMEOUT, WEBREQUEST_TIMEOUT);
@@ -678,9 +679,9 @@ namespace agsXMPP.net
             //Console.WriteLine(String.Format("Start Webrequest: id:{0}", webRequestId.ToString()));
             try
             {
-                IAsyncResult result = req.BeginGetRequestStream(new AsyncCallback(this.OnGetRequestStream), state);                
+                IAsyncResult result = req.BeginGetRequestStream(new AsyncCallback(this.OnGetRequestStream), state);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //Console.WriteLine(ex.Message);
             }
@@ -697,16 +698,16 @@ namespace agsXMPP.net
             state.WebRequest.Abort();
         }
 
-//        public void TimeOutGetResponseStream(Object stateObj)
-//        {
-//#if DEBUG
-//            Console.WriteLine("Web Response timed out");
-//#endif
-//            WebRequestState state = stateObj as WebRequestState;
-//            state.TimeOutTimer.Dispose();
-//            state.Aborted = true;
-//            state.WebRequest.Abort();
-//        }
+        //        public void TimeOutGetResponseStream(Object stateObj)
+        //        {
+        //#if DEBUG
+        //            Console.WriteLine("Web Response timed out");
+        //#endif
+        //            WebRequestState state = stateObj as WebRequestState;
+        //            state.TimeOutTimer.Dispose();
+        //            state.Aborted = true;
+        //            state.WebRequest.Abort();
+        //        }
 
         private void OnGetRequestStream(IAsyncResult ar)
         {
@@ -751,21 +752,21 @@ namespace agsXMPP.net
 
             //Console.WriteLine(String.Format("OnEndWrite: id:{0}", state.WebRequestId.ToString()));
 
-            HttpWebRequest req      = state.WebRequest as HttpWebRequest;
-            Stream requestStream    = state.RequestStream;
+            HttpWebRequest req = state.WebRequest as HttpWebRequest;
+            Stream requestStream = state.RequestStream;
 
             requestStream.EndWrite(ar);
             requestStream.Close();
-            
+
             IAsyncResult result;
-            
+
             try
             {
                 if (state.IsSessionRequest)
-                    result = req.BeginGetResponse(new AsyncCallback(this.OnGetSessionRequestResponse), state);            
+                    result = req.BeginGetResponse(new AsyncCallback(this.OnGetSessionRequestResponse), state);
                 else
-                    result = req.BeginGetResponse(new AsyncCallback(this.OnGetResponse), state);     
-               
+                    result = req.BeginGetResponse(new AsyncCallback(this.OnGetResponse), state);
+
             }
             catch (Exception ex)
             {
@@ -779,7 +780,7 @@ namespace agsXMPP.net
             {
                 // grab the custom state object
                 WebRequestState state = (WebRequestState)ar.AsyncState;
-                
+
                 //Console.WriteLine(String.Format("OnGetResponse: id:{0}", state.WebRequestId.ToString()));
 
                 //if (state.Aborted)
@@ -791,20 +792,20 @@ namespace agsXMPP.net
                 //    }
                 //    return;
                 //}
-                               
 
-                HttpWebRequest request = (HttpWebRequest)state.WebRequest;               
-                
+
+                HttpWebRequest request = (HttpWebRequest)state.WebRequest;
+
 
                 HttpWebResponse resp = null;
 
                 if (request.HaveResponse)
-                {                   
+                {
                     // TODO, its crashing mostly here
                     // get the Response
                     try
                     {
-                        resp = (HttpWebResponse) request.EndGetResponse(ar);
+                        resp = (HttpWebResponse)request.EndGetResponse(ar);
                     }
                     catch (WebException ex)
                     {
@@ -909,5 +910,5 @@ namespace agsXMPP.net
             base.FireOnReceive(bStanzas, bStanzas.Length);
             terminated = true;
         }
-    }    
+    }
 }
