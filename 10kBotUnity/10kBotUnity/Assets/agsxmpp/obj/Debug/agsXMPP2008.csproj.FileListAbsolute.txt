@@ -1,6 +1,0 @@
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net35\Debug\agsXMPP.dll.config
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net35\Debug\agsXMPP.dll
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net35\Debug\agsXMPP.pdb
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\obj\Debug\agsXMPP2008.csprojResolveAssemblyReference.cache
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\obj\Debug\agsXMPP.dll
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\obj\Debug\agsXMPP.pdb

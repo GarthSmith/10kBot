@@ -1,4 +1,0 @@
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net35\Release\agsXMPP.dll.config
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\NET35\Release\agsXMPP.xml
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net35\Release\agsXMPP.dll
-C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\obj\Release\agsXMPP.dll

@@ -17,14 +17,14 @@ public class Livecoding : MonoBehaviour
         cs.ConnectTimeout = 10000;
         cs.Connect();*/
 
-        xm = new XmppManager();
-        xm.Go();
+        // xm = new XmppManager();
+       //  xm.Go();
     }
-    XmppManager xm;
+    // XmppManager xm;
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        /*if (Input.GetKeyDown(KeyCode.Space))
         {
             XmppManager.Connect();
         }
@@ -32,7 +32,7 @@ public class Livecoding : MonoBehaviour
         {
             if (xm.ProblemSocket.ProblemSocket.Connected)
                 Debug.Log("Socket is connected: " + xm.ProblemSocket.ProblemSocket.Connected);
-        }
+        }*/
     }
 
     private static string PasswordHash
