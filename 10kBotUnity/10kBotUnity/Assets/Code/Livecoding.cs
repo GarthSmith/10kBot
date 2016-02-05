@@ -1,6 +1,9 @@
-﻿using System;
+﻿/* Written by Garth Smith.
+ * Free to use by anyone under whatever GPL, MIT, BSD, CC license they want.
+ */
+
+using System;
 using System.IO;
-using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
@@ -8,6 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Collections;
 using System.Text;
 using UnityEngine;
+using System.Xml;
 
 public class Livecoding : MonoBehaviour, IChat
 {
@@ -32,7 +36,6 @@ public class Livecoding : MonoBehaviour, IChat
         Reader = new StreamReader(Stream);
         Writer = new StreamWriter(Stream);
 
-        // CurrentState = new StartStreamState(Reader, Writer);
         // Write xml start stream request out and see if we get a response.
 
         Writer.Write(@"<stream:stream
@@ -67,13 +70,11 @@ public class Livecoding : MonoBehaviour, IChat
     byte[] buffer = new byte[2048];
     private void ReadSecureStream()
     {
-        // if (!Input.GetKeyDown(KeyCode.Space)) return;
-        // if (ReadSecureStreamThisManyTimes > 5) return; // Unity is freezing if we run this again?
+        // BUG: Unity is freezing if we run this too often!
+        // Probably need to use some kind of lock on the stream.
         if (SecureStream == null || !SecureStream.IsAuthenticated) return;
-        
-        // Read the  message sent by the server.
-        // Debug.Log("SecureStream has length " + SecureStream.Length + " and is at position " + SecureStream.Position);
 
+        // Read the  message sent by the server.
         int bytes = -1;
         if (SecureStream.CanRead && Stream.DataAvailable)
         {
@@ -95,25 +96,146 @@ public class Livecoding : MonoBehaviour, IChat
                 {
                     RequestPlainSasl();
                 }
-                if (messageString.Contains(@"<success xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>"))
+                else if (messageString.Contains(@"<success xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>"))
                 {
                     RequestSaslAuthenticatedStream();
                 }
-                if (messageString.Contains(@"<bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'/>"))
+                else if (messageString.Contains(@"<bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'/>"))
                 {
                     Bind();
                 }
-                if (messageString.Contains(@"<bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'><jid>"))
+                else if (messageString.Contains(@"<bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'><jid>"))
                 {
                     SessionBind();
                 }
-                if (messageString.Contains(@"<iq type='result' from='livecoding.tv' id='agsXMPP_2'/>"))
+                else if (messageString.Contains(@"<iq type='result' from='livecoding.tv' id='agsXMPP_2'/>"))
                 {
                     JoinRoom();
+                }
+                else
+                {
+                    LookForMessages(messageString);
                 }
             }
         }
     }
+
+    /// <summary>
+    /// Picks messages out of incoming XML.
+    /// </summary>
+    private void LookForMessages(string messageString)
+    {
+        if (CumulativeXml == null)
+            CumulativeXml = "";
+        CumulativeXml += messageString;
+
+        // Messages are Xml elements
+        // wrapped in <message ... />
+        // Eg:
+        // <message from='10ktactics@chat.livecoding.tv/xmetrix' to='10kbot@livecoding.tv/27180579011454665231434439' type='groupchat' id='149'><body xmlns='jabber:client'>bet its a pitbull</body><x xmlns='jabber:x:event'><composing/></x><delay xmlns='urn:xmpp:delay' from='10ktactics@chat.livecoding.tv' stamp='2016-02-05T07:50:55.210Z'/><x xmlns='jabber:x:delay' from='10ktactics@chat.livecoding.tv' stamp='20160205T07:50:55'/></message>
+
+        if (CumulativeXml.Contains(StartMessageToken))
+        {
+            // Start to process. We don't care about anything before the message.
+            CumulativeXml = TrimFront(CumulativeXml);
+            string singleMessageXml = GetMessageXml(CumulativeXml);
+            ProcessXml(singleMessageXml);
+            CumulativeXml = CumulativeXml.Substring(singleMessageXml.Length - 1);
+        }
+    }
+
+    /// <summary>
+    /// Hopefully a well formed xml string.
+    /// </summary>
+    private void ProcessXml(string singleMessageXml)
+    {
+        if (string.IsNullOrEmpty(singleMessageXml))
+            return;
+        Debug.Log("About to parse singlemessagexml\n" + singleMessageXml);
+        XmlDocument messageDoc = new XmlDocument();
+        messageDoc.LoadXml(singleMessageXml);
+        Debug.Log("We got xml doc " + messageDoc);
+
+        // Eg:
+        // <message from='10ktactics@chat.livecoding.tv/xmetrix'
+        //      to ='10kbot@livecoding.tv/27180579011454665231434439'
+        //      type ='groupchat' id='149'>
+        //      <body xmlns='jabber:client'>bet its a pitbull</body>
+        //      <x xmlns='jabber:x:event'><composing/></x><delay xmlns='urn:xmpp:delay' from='10ktactics@chat.livecoding.tv' stamp='2016-02-05T07:50:55.210Z'/><x xmlns='jabber:x:delay' from='10ktactics@chat.livecoding.tv' stamp='20160205T07:50:55'/></message>
+
+        // Find these two string.
+        string nickname = "";
+        string message = "";
+
+        // XmlNamespaceManager nsmgr = new XmlNamespaceManager(messageDoc.NameTable);
+        // nsmgr.AddNamespace("ab", "http://www.lucernepublishing.com");
+        XmlNode messageNode = messageDoc.SelectSingleNode(".//message");
+        
+        if (messageNode == null || messageNode.Attributes == null)
+        {
+            Debug.Log("Yeah attributes is null. " + (messageNode == null ? "null" : messageNode.OuterXml));
+        }
+        else {
+            var fromAttribute = messageNode.Attributes["from"];
+            if (fromAttribute != null)
+            {
+                nickname = fromAttribute.Value;
+                nickname = nickname.Replace("10ktactics@chat.livecoding.tv/", "");
+            }
+            else
+            {
+                Debug.Log("How are we missing the from attribute from message doc? " + messageDoc.OuterXml);
+            }
+        }
+        // TODO: How to get body child element from messageDoc.
+        var bodyNode = messageNode.SelectSingleNode(".//body");
+        if (bodyNode != null)
+        {
+            Debug.Log("Found body node.");
+            message = bodyNode.InnerText;
+        }
+        else
+        {
+            Debug.Log("Could not find body node.");
+        }
+        /*foreach (XmlNode childNode in messageDoc.ChildNodes)
+        {
+            if (childNode.Name == "body")
+            {
+                message = childNode.InnerText;
+                break;
+            }
+        }*/
+
+        Debug.Log("Got nickname " + nickname + " and message " + message);
+        if (MessageReceived != null && !string.IsNullOrEmpty(nickname) && !string.IsNullOrEmpty(message))
+            MessageReceived(nickname, message);
+    }
+
+    private string GetMessageXml(string cumulativeXml)
+    {
+        int endIndex = cumulativeXml.IndexOf(EndMessageToken) + EndMessageToken.Length;
+        string message = cumulativeXml.Substring(0, endIndex);
+        Debug.LogWarning("Got message xml " + message);
+        return message;
+    }
+
+    /// <summary>
+    /// Remove everything before the first <message xml.
+    /// </summary>
+    private string TrimFront(string trimThis)
+    {
+        if (string.IsNullOrEmpty(trimThis))
+            return trimThis;
+        int startIndex = trimThis.IndexOf(StartMessageToken);
+        if (startIndex < 0) // not found
+            return trimThis;
+        string trimmed = trimThis.Substring(startIndex);
+        Debug.Log("Trimmed front to " + trimmed.Substring(0, 10) + "...");
+        return trimmed;
+    }
+
+    string CumulativeXml;
 
     private void SessionBind()
     {
@@ -271,4 +393,7 @@ public class Livecoding : MonoBehaviour, IChat
             return password;
         }
     }
+
+    const string StartMessageToken = @"<message ";
+    const string EndMessageToken = @"</message>";
 }
