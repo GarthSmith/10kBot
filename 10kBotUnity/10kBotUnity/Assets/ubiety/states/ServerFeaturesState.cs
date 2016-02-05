@@ -35,6 +35,7 @@ namespace Ubiety.States
         /// </param>
         public override void Execute(Tag data = null)
         {
+            LogQueue.Log("ServerFeaturesState.Execute(" + data + ")");
             Features f;
 
             var stream = data as Stream;
@@ -63,8 +64,11 @@ namespace Ubiety.States
                     return;
                 }
 
+                
+
                 if (!ProtocolState.Authenticated)
                 {
+                    LogQueue.Warn("Setting up SaslProcessor.");
                     ProtocolState.Processor = SaslProcessor.CreateProcessor(f.StartSasl.SupportedTypes, ProtocolState.Settings.AuthenticationTypes);
                     if (ProtocolState.Processor == null)
                     {
@@ -75,7 +79,12 @@ namespace Ubiety.States
                     ProtocolState.Socket.Write(ProtocolState.Processor.Initialize(ProtocolState.Settings.Id, ProtocolState.Settings.Password));
 
                     ProtocolState.State = new SaslState();
+                    ProtocolState.State.Execute(data);
                     return;
+                }
+                else
+                {
+                    LogQueue.Warn("Skipping Sasl because ProtocolState.Authenticated");
                 }
 
                 // Takes place after authentication according to XEP-0170
@@ -97,7 +106,39 @@ namespace Ubiety.States
                     }
                 }
             }
+            /*else
+            {
+                // f is null
+                // HACK: I'm adding this because it seems like livecoding.tv wants it?
+                // Probably not good for connecting to other XMPP servers.
+                if (!ProtocolState.Authenticated)
+                {
+                    LogQueue.Warn("Setting up SaslProcessor because f is null.");
+                    ProtocolState.Processor = SaslProcessor.CreateProcessor(MechanismType.Plain, MechanismType.Plain);
+                    if (ProtocolState.Processor == null)
+                    {
+                        LogQueue.Warn("Disconnecting because we failed to get a sasl processor..");
+                        ProtocolState.State = new DisconnectState();
+                        ProtocolState.State.Execute();
+                        return;
+                    }
+                    LogQueue.Warn("Initializing processor and writing.");
+                    ProtocolState.Socket.Write(ProtocolState.Processor.Initialize(ProtocolState.Settings.Id, ProtocolState.Settings.Password));
 
+                    ProtocolState.State = new SaslState();
+                    ProtocolState.State.Execute(data);
+                    return;
+                }
+            }*/
+            
+            /*if (!ProtocolState.Authenticated)
+            {
+                LogQueue.Error("Binding before we authenticate!");
+                throw new System.Exception("Not authenticated why binding?");
+            }*/
+
+
+            LogQueue.Warn("Entering BindingState. f is null: " + (f == null) + " and ProtocolState.Authenticated is " + ProtocolState.Authenticated);
             ProtocolState.State = new BindingState();
             ProtocolState.State.Execute();
         }

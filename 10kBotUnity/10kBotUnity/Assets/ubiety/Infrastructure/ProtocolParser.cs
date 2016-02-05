@@ -143,7 +143,7 @@ namespace Ubiety.Infrastructure
 
         private static void StartTag()
         {
-            LogQueue.Log("Starting to create a tag.");
+            // LogQueue.Log("Starting to create a tag.");
             var ht = new Hashtable();
 
             if (_reader.HasAttributes)
@@ -214,7 +214,7 @@ namespace Ubiety.Infrastructure
 
         private static void EndTag()
         {
-            LogQueue.Log("Starting to end a tag.");
+            // LogQueue.Log("Starting to end a tag.");
             if (_element == null)
                 return;
 
@@ -227,7 +227,7 @@ namespace Ubiety.Infrastructure
             var parent = (XmlElement) _element.ParentNode;
             if (parent == null)
             {
-                LogQueue.Log("Finished parsing xml response from server. Announcing we have a new tag.");
+                // LogQueue.Log("Finished parsing xml response from server. Announcing we have a new tag.");
                 ProtocolState.Events.NewTag(null, (Tag) _element);
             }
             _element = parent;

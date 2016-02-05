@@ -39,9 +39,9 @@ namespace Ubiety.Net
     internal class AsyncSocket : IDisposable
     {
         // Timeout after 5 seconds by default
-/*
-        private const int Timeout = 5000;
-*/
+        /*
+                private const int Timeout = 5000;
+        */
         private const int BufferSize = 4096;
         private readonly byte[] _bufferBytes = new byte[BufferSize];
         private readonly Address _destinationAddress;
@@ -70,20 +70,20 @@ namespace Ubiety.Net
         /// </summary>
         public bool Connected { get; private set; }
 
-/*
-        /// <summary>
-        /// </summary>
-        public string Hostname
-        {
-            get { return _destinationAddress.Hostname; }
-        }
-*/
+        /*
+                /// <summary>
+                /// </summary>
+                public string Hostname
+                {
+                    get { return _destinationAddress.Hostname; }
+                }
+        */
 
-/*
-        /// <summary>
-        /// </summary>
-        public bool Secure { get; set; }
-*/
+        /*
+                /// <summary>
+                /// </summary>
+                public bool Secure { get; set; }
+        */
 
         #endregion
 
@@ -102,6 +102,7 @@ namespace Ubiety.Net
         {
             LogQueue.Log("AsyncSocket.Connect() is trying hostname " + _destinationAddress.Hostname);
             var address = _destinationAddress.NextIpAddress();
+            LogQueue.Log("AsyncSocket.Connect() is trying hostname " + _destinationAddress.Hostname + " address " + address);
             IPEndPoint end;
             if (address != null)
             {
@@ -114,6 +115,7 @@ namespace Ubiety.Net
                     "Unable to obtain server IP address.");
                 return;
             }
+
 
             _socket = !_destinationAddress.IPv6
                 ? new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
@@ -141,7 +143,7 @@ namespace Ubiety.Net
             LogQueue.Log("AsyncSocket.FinishConnect(" + ar + "). IsCompleted? " + ar.IsCompleted);
             try
             {
-                var socket = (Socket) ar.AsyncState;
+                var socket = (Socket)ar.AsyncState;
                 socket.EndConnect(ar);
 
                 Connected = true;
@@ -248,11 +250,11 @@ namespace Ubiety.Net
                 if (cert != null)
                 {
                     LogQueue.Log("cert subject " + cert.Subject + ", expires " + cert.GetExpirationDateString());
-                    
+
                 }
             }
 
-                LogQueue.Warn("Received SslPolicyErrors " + errors);
+            LogQueue.Warn("Received SslPolicyErrors " + errors);
             return false;
         }
 
@@ -271,7 +273,8 @@ namespace Ubiety.Net
             }
             var mesg = _utf.GetBytes(msg);
             mesg = _compressed ? _compression.Deflate(mesg) : mesg;
-            try {
+            try
+            {
                 LogQueue.Log("Writing message to stream: " + msg);
                 _stream.Write(mesg, 0, mesg.Length);
             }

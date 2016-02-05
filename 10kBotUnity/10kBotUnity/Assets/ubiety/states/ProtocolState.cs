@@ -44,7 +44,16 @@ namespace Ubiety.States
         /// <value>
         ///     The current state we are in.
         /// </value>
-        public static State State { get; set; }
+        public static State State
+        {
+            get { return MState; }
+            set
+            {
+                LogQueue.Warn("STATE CHANGE!!! Changing State from " + MState + " to " + value);
+                MState = value;
+            }
+        }
+        private static State MState;
 
         /// <value>
         ///     The socket used for connecting to the server.
@@ -111,6 +120,7 @@ namespace Ubiety.States
 
         private static void EventsOnOnNewTag(object sender, TagEventArgs args)
         {
+            LogQueue.Log("Received " + args.Tag.GetType() + ": " + args.Tag + " from " + sender + " and our current state is " + State);
             State.Execute(args.Tag);
         }
     }

@@ -150,7 +150,7 @@ namespace Ubiety.Infrastructure
         {
             if (OnNewTag != null)
             {
-                LogQueue.Log("XmppEvents is announcing we have a new tag.");
+                LogQueue.Log("XmppEvents is announcing we have a new tag: " + args.Tag);
                 OnNewTag.Invoke(sender, args);
             }
             else
@@ -164,7 +164,7 @@ namespace Ubiety.Infrastructure
         /// <param name="tag"></param>
         public void NewTag(object sender, Tag tag)
         {
-            LogQueue.Log("XmppEvents is wrapping a tag up in a TagEventArgs.");
+            // LogQueue.Log("XmppEvents is wrapping a tag up in a TagEventArgs.");
             NewTag(sender, new TagEventArgs(tag));
         }
 

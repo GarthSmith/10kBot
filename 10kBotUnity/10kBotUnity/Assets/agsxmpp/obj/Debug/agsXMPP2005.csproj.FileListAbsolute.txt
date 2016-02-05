@@ -1,0 +1,4 @@
+C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net2\Debug\agsXMPP.dll
+C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net2\Debug\agsXMPP.pdb
+C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\obj\Debug\agsXMPP.dll
+C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\obj\Debug\agsXMPP.pdb

@@ -265,6 +265,8 @@ namespace Ubiety.Common
                     }
                 }
             }
+
+            LogQueue.Log("Parsed server " + Server + " from JID " + id);
         }
 
         #endregion

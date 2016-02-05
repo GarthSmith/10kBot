@@ -1,0 +1,3 @@
+C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net2\Release\agsXMPP.dll
+C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\bin\Net2\Release\agsXMPP.xml
+C:\Users\10kTactics\Downloads\agsxmpp\agsxmpp\obj\Release\agsXMPP.dll

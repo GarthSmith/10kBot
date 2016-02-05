@@ -71,8 +71,6 @@ namespace Ubiety.Registries
             T tag = null;
             Type t;
 
-            LogQueue.Log("Finding tag " + qname + "...");
-
             if (RegisteredItems.TryGetValue(qname.ToString(), out t))
             {
                 ConstructorInfo ctor = t.GetConstructor(new Type[] {});

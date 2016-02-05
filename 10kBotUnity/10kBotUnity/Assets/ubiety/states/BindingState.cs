@@ -16,6 +16,7 @@
 //Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using Ubiety.Common;
+using Ubiety.Common.Sasl;
 using Ubiety.Core;
 using Ubiety.Core.Iq;
 using Ubiety.Registries;
@@ -57,6 +58,30 @@ namespace Ubiety.States
 			}
 			else
 			{
+                var mechanism = data as Mechanism;
+                if (mechanism != null)
+                {
+                    LogQueue.Log("Yup found the SASL thing lets see if this works.");
+                    // Assuming PLAIN
+                    if (!ProtocolState.Authenticated)
+                    {
+                        // Just for livecoding.tv
+                        LogQueue.Warn("Setting up SaslProcessor inside BindingState.");
+                        ProtocolState.Processor = SaslProcessor.CreateProcessor(MechanismType.Plain, ProtocolState.Settings.AuthenticationTypes);
+                        if (ProtocolState.Processor == null)
+                        {
+                            ProtocolState.State = new DisconnectState();
+                            ProtocolState.State.Execute();
+                            return;
+                        }
+                        ProtocolState.Socket.Write(ProtocolState.Processor.Initialize(ProtocolState.Settings.Id, ProtocolState.Settings.Password));
+
+                        ProtocolState.State = new SaslState();
+                        ProtocolState.State.Execute(data);
+                        return;
+                    }
+                }
+
                 LogQueue.Log("BindingState.Execute(" + data + ") is running.");
                 var iq = data as Iq;
 				Bind bind = null;
@@ -73,15 +98,17 @@ namespace Ubiety.States
                 {
                     LogQueue.Log("BindingState got bind with UserJid " + bind.JidTag.UserJid);
                     ProtocolState.Settings.Id = bind.JidTag.UserJid;
+                    ProtocolState.State = new SessionState();
+                    ProtocolState.State.Execute();
                 }
                 else
                 {
                     LogQueue.Log("BindingState has a null bind.");
                 }
 
-				ProtocolState.State = new SessionState();
-				ProtocolState.State.Execute();
-			}
+                // ProtocolState.State = new SessionState();
+                // ProtocolState.State.Execute();
+            }
 		}
 	}
 }

@@ -12,11 +12,28 @@ using Ubiety.Core;
 using Ubiety.Registries;
 using System.Xml;
 using Ubiety.States;
+using System.Net.Sockets;
 
 public class Livecoding : MonoBehaviour
 {
     void Awake()
     {
+        IPHostEntry ipHostInfo = Dns.GetHostEntry("livecoding.tv");
+        IPAddress ipAddress = ipHostInfo.AddressList[0];// IPAddress.Parse(address);
+        IPEndPoint endPoint = new IPEndPoint(ipAddress, 5222);
+
+        LogQueue.Log("Attempting to connect socket.");
+
+        var _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        try {
+            _socket.Connect(endPoint);
+            LogQueue.Log("Connected!");
+        }
+        catch (Exception e)
+        {
+            LogQueue.Error("Unable to connect got " + e + ": " + e.Message);
+        }
+
         LivecodingXmpp = new Xmpp();
     }
 
@@ -25,7 +42,13 @@ public class Livecoding : MonoBehaviour
         if (Initialized) return;
         Xmpp.Settings.Id = new JID("10kbot@livecoding.tv");
         Xmpp.Settings.Password = PasswordHash;
+        Xmpp.Settings.AuthenticationTypes = MechanismType.Plain;
+        Xmpp.Settings.Ssl = true;
+
+        ProtocolState.Settings.Id = new JID("10kbot@livecoding.tv");
+        ProtocolState.Settings.Password = PasswordHash;
         ProtocolState.Settings.Ssl = true;
+        ProtocolState.Settings.AuthenticationTypes = MechanismType.Plain;
 
         LivecodingXmpp.OnError += HandleError;
         LivecodingXmpp.OnNewTag += HandleNewTag;
@@ -36,66 +59,37 @@ public class Livecoding : MonoBehaviour
 
     void Update()
     {
-        Initialize();
+        // Initialize();
 
+        ConsoleXmpp.Connect();
+        enabled = false;
         if (Time.time < 5f)// Wait a few seconds.
         {
             return;
         }
-        enabled = false;
+       //  enabled = false;
 
-        // Create join room request.
-        GenericTag joinTag = new GenericTag(new XmlQualifiedName("presence"));
-        // XmlAttribute fromAttribute = joinTag.OwnerDocument.CreateAttribute("", "from", "");
-        // XmlAttribute toAttribute = joinTag.OwnerDocument.CreateAttribute("", "to", "10ktactics@chat.livecoding.tv");
-        // joinTag.SetAttributeNode(fromAttribute);
-        // joinTag.SetAttributeNode(toAttribute);
-
-        joinTag.SetAttribute("from", "10kbot@livecoding.tv/10kbot");
-        joinTag.SetAttribute("id", "ng91xs69");
-        joinTag.SetAttribute("to", "10ktactics@chat.livecoding.tv/10ktactics");
-
-        LogQueue.Log(Time.frameCount + " Attempting to send tag " + joinTag.Value);
-
-        // Send it.
-        // LivecodingXmpp.Send(joinTag);
-
-        /*joinTag.Attributes
-
-        if (joinRoomXml.Attributes == null)
+        /*if (ProtocolState.State is SessionState)
         {
-            LogQueue.Log("Attributes is null.");
-        }
-        else
-        {
-            foreach (XmlAttribute att in joinRoomXml.Attributes)
-                joinTag.Attributes.Append(att);
-        }
+            // Create join room request.
+            GenericTag joinTag = new GenericTag(new XmlQualifiedName("presence"));
+            joinTag.SetAttribute("from", "10kbot@livecoding.tv/10kbot");
+            joinTag.SetAttribute("id", "ng91xs69"); // Needed?
+            //joinTag.SetAttribute("to", "10ktactics@chat.livecoding.tv/10ktactics");
+            joinTag.SetAttribute("to", "10ktactics@chat.livecoding.tv/10kbot");
 
-        joinTag.ParentNode.Attributes.Append()
-
-        LogQueue.Log("joinTag has xml " + joinTag.Value);
-
-        // How do I get my jid and the room's jid into the joinTag?*/
-
-
-
-        // XmlQualifiedName presense = new XmlQualifiedName("presence");
-
-        // GenericTag joinRoomTagMaybe = TagRegistry.GetTag<GenericTag>();
-        // XmlAttribute fromAttribute = joinRoomTagMaybe.Cre("from");
-
-        // Need to add to, from attributes. Maybe ID attribute I don't know.
-
-        // LivecodingXmpp.Send()
+            // Send it.
+            LogQueue.Log(Time.frameCount + " Attempting to send tag " + joinTag);
+            LivecodingXmpp.Send(joinTag);
+        }*/
     }
 
     private void HandleNewTag(object sender, TagEventArgs e)
     {
-        if (e != null)
+        /*if (e != null)
             LogQueue.Log("Received new tag from " + sender);
         else
-            LogQueue.Log("Received new tag " + e.Tag + " from " + sender);
+            LogQueue.Log("Received new tag " + e.Tag + " from " + sender);*/
     }
 
     private void HandleError(object sender, Ubiety.Infrastructure.ErrorEventArgs e)
