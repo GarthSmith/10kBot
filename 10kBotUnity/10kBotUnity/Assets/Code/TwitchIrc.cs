@@ -29,20 +29,20 @@ public class ChannelMessageEventArgs : EventArgs
 public class TwitchIrc : MonoBehaviour, IChat
 {
     #region variables
-    public Text ChannelUiText;
+    // public Text ChannelUiText;
 
     private const string ServerName = "irc.twitch.tv";
     private const int ServerPort = 6667;
 
     public static TwitchIrc Instance;
 
-    public bool ConnectOnAwake;
+    public bool ConnectOnStart = true;
 
-    public string Username;
+    public string Username = "10kbot";
 
     private string OauthToken { get { return Twitch.TwitchPassword; } }
 
-    public string Channel;
+    public string Channel = "#10ktactics";
 
     private TcpClient ircTcpClient;
 
@@ -186,8 +186,11 @@ public class TwitchIrc : MonoBehaviour, IChat
 
     private void OnChannelMessage(ChannelMessageEventArgs channelMessageEventArgs)
     {
-        // Append
-        ChannelUiText.text += "\n" + channelMessageEventArgs.From + ": " + channelMessageEventArgs.Message;
+        // Announce
+        if (MessageReceived != null)
+        {
+            MessageReceived(channelMessageEventArgs.From, channelMessageEventArgs.Message);
+        }
     }
 
     //Strips the message of unnecessary characters
@@ -230,11 +233,11 @@ public class TwitchIrc : MonoBehaviour, IChat
 
     #endregion
 
-    void Awake()
+    void Start()
     {
         Instance = this;
 
-        if (ConnectOnAwake)
+        if (ConnectOnStart)
             Connect();
     }
 
