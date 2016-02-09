@@ -4,7 +4,6 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.UI;
 
 #region delegates
 
@@ -12,35 +11,27 @@ public delegate void ChannelMessage(ChannelMessageEventArgs channelMessageArgs);
 
 #endregion
 
-public class ChannelMessageEventArgs : EventArgs
+public class Twitch : MonoBehaviour, IChat
 {
-    public string Channel { get; internal set; }
-    public string From { get; internal set; }
-    public string Message { get; internal set; }
+    /// <summary>
+    /// Announce we received a message from Twitch.
+    /// Provides Username and Msg.
+    /// </summary>
+    public event Action<string, string> MessageReceived;
 
-    public ChannelMessageEventArgs(string Channel, string From, string Message)
-    {
-        this.Channel = Channel;
-        this.From = From;
-        this.Message = Message;
-    }
-}
-
-public class TwitchIrc : MonoBehaviour, IChat
-{
     #region variables
     // public Text ChannelUiText;
 
     private const string ServerName = "irc.twitch.tv";
     private const int ServerPort = 6667;
 
-    public static TwitchIrc Instance;
+    public static Twitch Instance;
 
     public bool ConnectOnStart = true;
 
     public string Username = "10kbot";
 
-    private string OauthToken { get { return Twitch.TwitchPassword; } }
+    private string OauthToken { get { return TwitchPassword; } }
 
     public string Channel = "#10ktactics";
 
@@ -77,7 +68,7 @@ public class TwitchIrc : MonoBehaviour, IChat
             Send("PASS " + OauthToken);
             Send("NICK " + Username);
 
-            StartCoroutine("Listen");
+            StartCoroutine(Listen());
         }
         catch (Exception ex)
         {
@@ -109,7 +100,6 @@ public class TwitchIrc : MonoBehaviour, IChat
     {
         while (true)
         {
-
             if (!ircTcpClient.Connected)
                 Debug.LogError("Lost connection!");
 
@@ -158,12 +148,6 @@ public class TwitchIrc : MonoBehaviour, IChat
             case "001": // server welcome message, after this we can join
                 Send("MODE " + Username + " +B");
                 OnConnectedToServer();
-                if (!sentMessage)
-                {
-                    // Try to send one! See if anything happens.
-                    Send("PRIVMSG #10ktactics Hello!");
-                    sentMessage = true;
-                }
                 break;
 
             case "PRIVMSG": // message was sent to the channel or as private
@@ -180,9 +164,8 @@ public class TwitchIrc : MonoBehaviour, IChat
                 break;
         }
     }
-    bool sentMessage;
 
-    public event Action<string, string> MessageReceived;
+    
 
     private void OnChannelMessage(ChannelMessageEventArgs channelMessageEventArgs)
     {
@@ -244,5 +227,17 @@ public class TwitchIrc : MonoBehaviour, IChat
     void OnDisable()
     {
         Disconnect();
+    }
+
+    public static string TwitchPassword
+    {
+        get
+        {
+            string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            path += @"\twitchoauthpassword.txt";
+            string password = File.ReadAllText(path);
+            password = password.Trim();
+            return password;
+        }
     }
 }

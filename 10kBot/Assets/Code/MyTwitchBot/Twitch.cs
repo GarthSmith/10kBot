@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Collections;
@@ -54,26 +54,7 @@ public class Twitch : MonoBehaviour, IChat
         }
     }
 
-    /*private IEnumerator ListenRoutine()
-    {
-        while (true)
-        {
-            if (NetworkStream.DataAvailable)
-            {
-                using (var reader = new StreamReader(NetworkStream))
-                {
-                    string inputLine;
-                    if ((inputLine = reader.ReadLine()) != null)
-                        ParseData(inputLine);
-                }
-            }
-            yield return null;
-        }
-    }*/
-
     Regex someExpression = new Regex(@"(?::(?<Prefix>[^ ]+) +)?(?<Command>[^ :]+)(?<middle>(?: +[^ :]+))*(?<coda> +:(?<trailing>.*)?)?");
-
-    
 
     private void ParseData(string data)
     {
@@ -135,3 +116,4 @@ public class Twitch : MonoBehaviour, IChat
             Message(channelMessageEventArgs.From + ": " + channelMessageEventArgs.Message);
     }
 }
+*/
