@@ -1,4 +1,4 @@
-﻿/* Written by Garth Smith.
+/* Written by Garth Smith.
  * Free to use by anyone under whatever GPL, MIT, BSD, CC license they want.
  */
 
@@ -360,8 +360,6 @@ public class Livecoding : MonoBehaviour, IChat
         Writer.Write(@"<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>");
         Writer.Flush();
     }
-
-
 
     private SslStream SecureStream;
     private NetworkStream Stream;
