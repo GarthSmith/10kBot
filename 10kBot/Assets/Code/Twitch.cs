@@ -1,3 +1,6 @@
+/* https://dev.twitch.tv/docs/irc/
+ */
+
 using System;
 using System.Collections;
 using System.IO;

@@ -2,8 +2,8 @@
 10kBot/obj/
 10kBot/Library/
 10kBot/Builds/
-10kBot/10kBot.CSharp.csproj
-10kBot/10kBot.sln
-10kBot/Assembly-CSharp.csproj
+10kBot/*.csproj
+10kBot/*.sln
 10kBot/Temp/
-10kBot/BotBuilds/
+10kBot/Logs/
+10kBot/UserSettings/
