@@ -13,16 +13,20 @@ using System.Text;
 using UnityEngine;
 using System.Xml;
 
+/// <summary>
+/// livecoding.tv is a now defunct site that was like a Twitch for programming. Keeping this file in case we want to
+/// connect to similar chat services. 
+/// </summary>
 public class Livecoding : MonoBehaviour, IChat
 {
     public event Action<string, string> MessageReceived;
 
-    void Awake()
+    private void Awake()
     {
         Client = new TcpClient(ServerName, 5222);
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         try
         {
@@ -49,7 +53,7 @@ public class Livecoding : MonoBehaviour, IChat
         Debug.Log("Wrote stream request out");
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         StopAllCoroutines();
         if (SecureStream != null && SecureStream.IsAuthenticated)
@@ -58,7 +62,7 @@ public class Livecoding : MonoBehaviour, IChat
         Client.Close();
     }
 
-    IEnumerator PollingRoutine()
+    private IEnumerator PollingRoutine()
     {
         while (enabled)
         {
@@ -67,7 +71,8 @@ public class Livecoding : MonoBehaviour, IChat
         }
     }
 
-    byte[] buffer = new byte[2048];
+    private byte[] buffer = new byte[2048];
+    
     private void ReadSecureStream()
     {
         // BUG: Unity is freezing if we run this too often!
@@ -75,23 +80,23 @@ public class Livecoding : MonoBehaviour, IChat
         if (SecureStream == null || !SecureStream.IsAuthenticated) return;
 
         // Read the  message sent by the server.
-        int bytes = -1;
+        var bytes = -1;
         if (SecureStream.CanRead && Stream.DataAvailable)
         {
             SecureStream.ReadTimeout = 100;
             bytes = SecureStream.Read(buffer, 0, buffer.Length);
-            Decoder decoder = Encoding.UTF8.GetDecoder();
-            char[] chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
+            var decoder = Encoding.UTF8.GetDecoder();
+            var chars = new char[decoder.GetCharCount(buffer, 0, bytes)];
             // string received = Convert.ToBase64String(buffer);
             decoder.GetChars(buffer, 0, bytes, chars, 0);
-            StringBuilder messageData = new StringBuilder();
+            var messageData = new StringBuilder();
             messageData.Append(chars);
             if (messageData.Length > 0)
             {
                 Debug.Log("Received secure message " + messageData);
                 // Debug.Log("Base64 have any effect? " + received);
                 ReadSecureStreamThisManyTimes++;
-                string messageString = messageData.ToString();
+                var messageString = messageData.ToString();
                 if (messageString.Contains(@"<mechanism>PLAIN</mechanism>"))
                 {
                     RequestPlainSasl();
@@ -138,7 +143,7 @@ public class Livecoding : MonoBehaviour, IChat
         {
             // Start to process. We don't care about anything before the message.
             CumulativeXml = TrimFront(CumulativeXml);
-            string singleMessageXml = GetMessageXml(CumulativeXml);
+            var singleMessageXml = GetMessageXml(CumulativeXml);
             ProcessXml(singleMessageXml);
             CumulativeXml = CumulativeXml.Substring(singleMessageXml.Length - 1);
         }
@@ -154,7 +159,7 @@ public class Livecoding : MonoBehaviour, IChat
         if (!singleMessageXml.StartsWith(StartMessageToken) || !singleMessageXml.EndsWith(EndMessageToken))
             return;
         Debug.Log("About to parse singlemessagexml\n" + singleMessageXml);
-        XmlDocument messageDoc = new XmlDocument();
+        var messageDoc = new XmlDocument();
         messageDoc.LoadXml(singleMessageXml);
         Debug.Log("We got xml doc " + messageDoc);
 
@@ -166,12 +171,12 @@ public class Livecoding : MonoBehaviour, IChat
         //      <x xmlns='jabber:x:event'><composing/></x><delay xmlns='urn:xmpp:delay' from='10ktactics@chat.livecoding.tv' stamp='2016-02-05T07:50:55.210Z'/><x xmlns='jabber:x:delay' from='10ktactics@chat.livecoding.tv' stamp='20160205T07:50:55'/></message>
 
         // Find these two string.
-        string nickname = "";
-        string message = "";
+        var nickname = "";
+        var message = "";
 
         // XmlNamespaceManager nsmgr = new XmlNamespaceManager(messageDoc.NameTable);
         // nsmgr.AddNamespace("ab", "http://www.lucernepublishing.com");
-        XmlNode messageNode = messageDoc.SelectSingleNode(".//message");
+        var messageNode = messageDoc.SelectSingleNode(".//message");
         
         if (messageNode == null || messageNode.Attributes == null)
         {
@@ -205,8 +210,8 @@ public class Livecoding : MonoBehaviour, IChat
 
     private string GetMessageXml(string cumulativeXml)
     {
-        int endIndex = cumulativeXml.IndexOf(EndMessageToken) + EndMessageToken.Length;
-        string message = cumulativeXml.Substring(0, endIndex);
+        var endIndex = cumulativeXml.IndexOf(EndMessageToken) + EndMessageToken.Length;
+        var message = cumulativeXml.Substring(0, endIndex);
         Debug.LogWarning("Got message xml " + message);
         return message;
     }
@@ -218,19 +223,19 @@ public class Livecoding : MonoBehaviour, IChat
     {
         if (string.IsNullOrEmpty(trimThis))
             return trimThis;
-        int startIndex = trimThis.IndexOf(StartMessageToken);
+        var startIndex = trimThis.IndexOf(StartMessageToken);
         if (startIndex < 0) // not found
             return trimThis;
-        string trimmed = trimThis.Substring(startIndex);
+        var trimmed = trimThis.Substring(startIndex);
         Debug.Log("Trimmed front to " + trimmed.Substring(0, 10) + "...");
         return trimmed;
     }
 
-    string CumulativeXml;
+    private string CumulativeXml;
 
     private void SessionBind()
     {
-        string sessionBindString = @"<iq id=""agsXMPP_2"" type=""set"" to=""livecoding.tv""><session xmlns=""urn:ietf:params:xml:ns:xmpp-session"" /></iq>";
+        var sessionBindString = @"<iq id=""agsXMPP_2"" type=""set"" to=""livecoding.tv""><session xmlns=""urn:ietf:params:xml:ns:xmpp-session"" /></iq>";
         Debug.Log("Attempting to bind to session " + sessionBindString);
         SendSecure(sessionBindString);
     }
@@ -250,7 +255,7 @@ public class Livecoding : MonoBehaviour, IChat
 
     private void SendSecure(string v)
     {
-        byte[] message = Encoding.UTF8.GetBytes(v);
+        var message = Encoding.UTF8.GetBytes(v);
         // byte[] pass = C
         // Set up new readers and writers.
         SecureStream.Write(message);
@@ -259,8 +264,8 @@ public class Livecoding : MonoBehaviour, IChat
 
     private void RequestSaslAuthenticatedStream()
     {
-        string requestString = @"<stream:stream to='livecoding.tv' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0' xml:lang='en'>";
-        byte[] message = Encoding.UTF8.GetBytes(requestString);
+        var requestString = @"<stream:stream to='livecoding.tv' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0' xml:lang='en'>";
+        var message = Encoding.UTF8.GetBytes(requestString);
         // byte[] pass = C
         // Set up new readers and writers.
         Debug.Log("Sending sasl authenticated stream request. binding is next.");
@@ -271,9 +276,9 @@ public class Livecoding : MonoBehaviour, IChat
     private void RequestPlainSasl()
     {
         // Remove old key and change password.
-        string requestString = @"<auth xmlns=""urn:ietf:params:xml:ns:xmpp-sasl"" mechanism=""PLAIN"">" + Password + "</auth>";
+        var requestString = @"<auth xmlns=""urn:ietf:params:xml:ns:xmpp-sasl"" mechanism=""PLAIN"">" + Password + "</auth>";
 
-        byte[] message = Encoding.UTF8.GetBytes(requestString);
+        var message = Encoding.UTF8.GetBytes(requestString);
         // byte[] pass = C
         // Set up new readers and writers.
         Debug.Log("Sending Plain Sasl request.");
@@ -281,17 +286,17 @@ public class Livecoding : MonoBehaviour, IChat
         SecureStream.Flush();
     }
 
-    int ReadSecureStreamThisManyTimes = 0;
+    private int ReadSecureStreamThisManyTimes = 0;
 
-    void Update()
+    private void Update()
     {
         if (ReadSecureStreamThisManyTimes == 0 && (SecureStream == null || !SecureStream.IsAuthenticated) && Stream.DataAvailable)
         {
             // Number of characters that are ready to be read.
-            int available = Client.Available;
-            char[] buffer = new char[available];
+            var available = Client.Available;
+            var buffer = new char[available];
             Reader.ReadBlock(buffer, 0, available);
-            string raw = new String(buffer);
+            var raw = new string(buffer);
             Debug.Log(Time.frameCount + " Received raw: " + raw);
             Parse(raw);
         }
@@ -338,9 +343,9 @@ public class Livecoding : MonoBehaviour, IChat
             return;
         }
         // Authenticated!
-        string request = @"<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' to='xmpp.livecoding.tv' version='1.0'>";
+        var request = @"<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' to='xmpp.livecoding.tv' version='1.0'>";
         Debug.Log("Asking to open a new XMPP stream on authenticated SecureStream! " + request);
-        byte[] message = Encoding.UTF8.GetBytes(request);
+        var message = Encoding.UTF8.GetBytes(request);
         // byte[] message = Convert.FromBase64String(@"<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' to='xmpp.livecoding.tv' version='1.0'>");
 
         // Set up new readers and writers.
@@ -373,9 +378,9 @@ public class Livecoding : MonoBehaviour, IChat
     {
         get
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             path += @"\livecodingpasshash.txt";
-            string password = File.ReadAllText(path);
+            var password = File.ReadAllText(path);
             password = password.Trim();
             if (string.IsNullOrEmpty(password))
                 throw new Exception("Missing password");
@@ -383,8 +388,8 @@ public class Livecoding : MonoBehaviour, IChat
         }
     }
 
-    const string StartMessageToken = @"<message ";
-    const string EndMessageToken = @"</message>";
-    const string StartMessageBodyToken = @"<body xmlns='jabber:client'>";
-    const string EndMessageBodyToken = @"</body>";
+    private const string StartMessageToken = @"<message ";
+    private const string EndMessageToken = @"</message>";
+    private const string StartMessageBodyToken = @"<body xmlns='jabber:client'>";
+    private const string EndMessageBodyToken = @"</body>";
 }

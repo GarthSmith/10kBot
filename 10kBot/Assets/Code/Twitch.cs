@@ -29,11 +29,11 @@ public class Twitch : MonoBehaviour, IChat
 
     public bool ConnectOnStart = true;
 
-    public string Username = "10kbot";
+    public string Username = "garthbot";
 
-    private string OauthToken { get { return TwitchPassword; } }
+    private string OauthToken => TwitchPassword;
 
-    public string Channel = "#10ktactics";
+    public string Channel = "#originalgarth";
 
     private TcpClient ircTcpClient;
 
@@ -52,10 +52,13 @@ public class Twitch : MonoBehaviour, IChat
     /// <summary>
     /// Connect to Twitch IRC server
     /// </summary>
-    public void Connect()
+    private void Connect()
     {
-        if (String.IsNullOrEmpty(Username) || String.IsNullOrEmpty(OauthToken))
+        if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(OauthToken))
+        {
+            Debug.LogError($"{GetType()}.{nameof(Connect)} missing {nameof(Username)} or {nameof(OauthToken)}");
             return;
+        }
 
         try
         {
@@ -96,7 +99,7 @@ public class Twitch : MonoBehaviour, IChat
 
     #region private_methods
 
-    IEnumerator Listen()
+    private IEnumerator Listen()
     {
         while (true)
         {
@@ -105,10 +108,10 @@ public class Twitch : MonoBehaviour, IChat
 
             if (stream.DataAvailable)
             {
-                int available = ircTcpClient.Available;
-                char[] buffer = new char[available];
+                var available = ircTcpClient.Available;
+                var buffer = new char[available];
                 reader.ReadBlock(buffer, 0, ircTcpClient.Available);
-                string raw = new String(buffer);
+                var raw = new string(buffer);
                 Debug.Log("Received raw:");
                 Debug.Log(raw);
                 raw = raw.Replace("\r", "");
@@ -128,7 +131,7 @@ public class Twitch : MonoBehaviour, IChat
 
         Debug.Log("Parsing: " + data);
         // split the data into parts
-        string[] ircData = data.Split(' ');
+        var ircData = data.Split(' ');
 
         // if the message starts with PING we must PONG back
         if (data.Length > 4)
@@ -194,7 +197,7 @@ public class Twitch : MonoBehaviour, IChat
     //Joins the array into a string after a specific index
     private string JoinArray(string[] strArray, int startIndex)
     {
-        return StripMessage(String.Join(" ", strArray, startIndex, strArray.Length - startIndex));
+        return StripMessage(string.Join(" ", strArray, startIndex, strArray.Length - startIndex));
     }
 
     private void Send(string message)
@@ -209,14 +212,14 @@ public class Twitch : MonoBehaviour, IChat
         Send("PRIVMSG " + Channel + " " + message);
     }
 
-    void OnConnectedToServer()
+    private void OnConnectedToServer()
     {
         Send("JOIN " + Channel);
     }
 
     #endregion
 
-    void Start()
+    private void Start()
     {
         Instance = this;
 
@@ -224,7 +227,7 @@ public class Twitch : MonoBehaviour, IChat
             Connect();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         Disconnect();
     }
@@ -233,9 +236,15 @@ public class Twitch : MonoBehaviour, IChat
     {
         get
         {
-            string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
             path += @"\twitchoauthpassword.txt";
-            string password = File.ReadAllText(path);
+            if (!File.Exists(path))
+            {
+                Debug.LogError($"Unable to find secret at {path}");
+                return null;
+            }
+
+            var password = File.ReadAllText(path);
             password = password.Trim();
             return password;
         }

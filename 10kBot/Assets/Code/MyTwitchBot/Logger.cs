@@ -6,15 +6,15 @@ namespace MTB
 {
     public class Logger
     {
-        static string getCurrentTime()
+        private static string getCurrentTime()
         {
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
             return now.ToString("dd.MM.yyyy H:mm");
         }
 
-        static string getCurrentLogTime()
+        private static string getCurrentLogTime()
         {
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
             return now.ToString("dd.MM.yyyy_H.mm.ss");
         }
 
@@ -27,7 +27,7 @@ namespace MTB
         {
             if (message.ToLower().Contains("pass")) return;
 
-            string log = getCurrentTime() + " >> [" + type.ToUpper() + "] " + message;
+            var log = getCurrentTime() + " >> [" + type.ToUpper() + "] " + message;
             
             type = type.ToLower();
             switch (type)

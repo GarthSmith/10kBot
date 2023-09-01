@@ -9,22 +9,22 @@ public class ThreadHelper : MonoBehaviour {
         Instance.ThingsToRun.Enqueue(thingToRun);
     }
 
-    void Awake()
+    private void Awake()
     {
         Instance = this;
         ThingsToRun = new Queue<Action>();
     }
 
-    void Update()
+    private void Update()
     {
         if (ThingsToRun == null) return;
         while (ThingsToRun.Count > 1)
         {
-            Action toRun = ThingsToRun.Dequeue();
+            var toRun = ThingsToRun.Dequeue();
             if (toRun != null) toRun();
         }
     }
 
-    Queue<Action> ThingsToRun;
+    private Queue<Action> ThingsToRun;
     private static ThreadHelper Instance;
 }
